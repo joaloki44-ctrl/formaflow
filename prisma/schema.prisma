@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  clerkId       String    @unique
+  email         String    @unique
+  firstName     String?
+  lastName      String?
+  imageUrl      String?
+  role          Role      @default(INSTRUCTOR)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  courses       Course[]
+  enrollments   Enrollment[]
+  certificates  Certificate[]
+
+  @@map("users")
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  description String   @db.Text
+  imageUrl    String?
+  price       Float    @default(0)
+  isPublished Boolean  @default(false)
+  category    String?
+  level       Level    @default(BEGINNER)
+  
+  instructorId String
+  instructor   User     @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  
+  modules      Module[]
+  enrollments  Enrollment[]
+  certificates Certificate[]
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("courses")
+}
+
+model Module {
+  id          String   @id @default(uuid())
+  title       String
+  position    Int
+  
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  lessons     Lesson[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("modules")
+}
+
+model Lesson {
+  id          String    @id @default(uuid())
+  title       String
+  content     String?   @db.Text
+  videoUrl    String?
+  type        LessonType @default(TEXT)
+  position    Int
+  isPublished Boolean   @default(false)
+  
+  moduleId    String
+  module      Module    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  
+  quizzes     Quiz[]
+  progress    Progress[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("lessons")
+}
+
+model Quiz {
+  id       String @id @default(uuid())
+  question String
+  options  String[]
+  correctAnswer Int
+  
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+
+  @@map("quizzes")
+}
+
+model Enrollment {
+  id     String @id @default(uuid())
+  userId String
+  courseId String
+  
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  status       EnrollmentStatus @default(ACTIVE)
+  totalProgress Float            @default(0)
+  completedAt   DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model Progress {
+  id        String @id @default(uuid())
+  userId    String
+  lessonId  String
+  isCompleted Boolean @default(false)
+  
+  lesson    Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, lessonId])
+  @@map("progress")
+}
+
+model Certificate {
+  id          String   @id @default(uuid())
+  userId      String
+  courseId    String
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  issuedAt    DateTime @default(now())
+  downloadUrl String?
+  
+  @@unique([userId, courseId])
+  @@map("certificates")
+}
+
+enum Role {
+  INSTRUCTOR
+  ADMIN
+  STUDENT
+}
+
+enum Level {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum LessonType {
+  TEXT
+  VIDEO
+  QUIZ
+  ASSIGNMENT
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  SUSPENDED
+}
