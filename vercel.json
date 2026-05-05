@@ -1,11 +1,5 @@
 {
   "version": 2,
-  "env": {
-    "PRISMA_GENERATE": "true"
-  },
-  "buildCommand": "node node_modules/prisma/build/index.js generate && next build",
-  "outputDirectory": ".next",
   "framework": "nextjs",
-  "installCommand": "npm install --verbose",
   "regions": ["cdg"]
 }
