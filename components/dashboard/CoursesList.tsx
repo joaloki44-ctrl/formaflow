@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Eye, Edit, Users, Sparkles } from "lucide-react";
+import { Eye, Edit, MoreVertical, Globe } from "lucide-react";
 
 interface Course {
   id: string;
@@ -24,12 +24,12 @@ interface CoursesListProps {
 export default function CoursesList({ courses }: CoursesListProps) {
   if (courses.length === 0) {
     return (
-      <div className="text-center py-16 bg-white/40 backdrop-blur-sm rounded-[2rem] border border-white/40">
-        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Sparkles className="w-8 h-8 text-gray-400" />
+      <div className="text-center py-20 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200">
+        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+          <Globe className="w-8 h-8 text-gray-300" />
         </div>
-        <p className="text-muted mb-6">Vous n'avez pas encore de formation</p>
-        <Link href="/dashboard/courses/new" className="btn-primary">
+        <p className="text-muted font-medium mb-6">Vous n'avez pas encore créé de formation.</p>
+        <Link href="/dashboard/courses/new" className="bg-secondary text-white px-6 py-3 rounded-lg font-bold hover:bg-secondary/90 transition-all">
           Créer ma première formation
         </Link>
       </div>
@@ -37,65 +37,60 @@ export default function CoursesList({ courses }: CoursesListProps) {
   }
 
   return (
-    <div className="space-y-4">
-      {courses.map((course) => (
-        <div
-          key={course.id}
-          className="group p-4 bg-white/40 hover:bg-white/80 backdrop-blur-xs border border-white/40 rounded-2xl flex items-center gap-4 transition-all duration-300 hover:translate-x-1"
-        >
-          {/* Thumbnail with Glass effect */}
-          <div className="w-20 h-14 bg-gradient-to-br from-gray-200 to-gray-300 rounded-xl flex-shrink-0 overflow-hidden relative shadow-inner">
-            {course.imageUrl ? (
-              <img src={course.imageUrl} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-xs">
-                {course.title[0]}
-              </div>
-            )}
-            <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
-
-          {/* Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-semibold truncate group-hover:text-[#ff6b4a] transition-colors">{course.title}</h3>
-              {course.isPublished ? (
-                <span className="px-2 py-0.5 bg-green-500/10 text-green-600 text-[10px] font-bold uppercase tracking-wider rounded-md">Publié</span>
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="divide-y divide-gray-100">
+        {courses.map((course) => (
+          <div key={course.id} className="p-5 flex items-center gap-4 hover:bg-gray-50/50 transition-colors">
+            {/* Thumbnail */}
+            <div className="w-20 h-14 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden border border-gray-200">
+              {course.imageUrl ? (
+                <img src={course.imageUrl} alt={course.title} className="w-full h-full object-cover" />
               ) : (
-                <span className="px-2 py-0.5 bg-amber-500/10 text-amber-600 text-[10px] font-bold uppercase tracking-wider rounded-md">Brouillon</span>
+                <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-xs">
+                  NO IMG
+                </div>
               )}
             </div>
-            <div className="flex items-center gap-3 text-xs text-muted">
-              <span className="flex items-center gap-1">
-                <Users className="w-3 h-3" />
-                {course._count.enrollments}
-              </span>
-              <span>•</span>
-              <span>{course._count.modules} modules</span>
-              <span>•</span>
-              <span className="font-bold text-gray-700">{course.price === 0 ? 'Gratuit' : `${course.price}€`}</span>
+
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="font-bold text-primary truncate">{course.title}</h3>
+                {course.isPublished ? (
+                  <span className="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold uppercase rounded border border-green-100 tracking-wider">Publié</span>
+                ) : (
+                  <span className="px-2 py-0.5 bg-gray-50 text-gray-600 text-[10px] font-bold uppercase rounded border border-gray-100 tracking-wider">Brouillon</span>
+                )}
+              </div>
+              <p className="text-xs font-medium text-muted flex items-center gap-2">
+                <span className="text-primary">{course._count.enrollments} apprenants</span>
+                <span>•</span>
+                <span>{course._count.modules} modules</span>
+                <span>•</span>
+                <span className="text-primary font-bold">{course.price === 0 ? 'Gratuit' : `${course.price}€`}</span>
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/dashboard/courses/${course.id}`}
+                className="p-2 text-muted hover:text-primary hover:bg-gray-100 rounded-lg transition-all"
+                title="Consulter"
+              >
+                <Eye className="w-4 h-4" />
+              </Link>
+              <Link
+                href={`/dashboard/courses/${course.id}/edit`}
+                className="p-2 text-muted hover:text-primary hover:bg-gray-100 rounded-lg transition-all"
+                title="Modifier"
+              >
+                <Edit className="w-4 h-4" />
+              </Link>
             </div>
           </div>
-
-          {/* Actions - Floating style */}
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
-            <Link
-              href={`/dashboard/courses/${course.id}`}
-              className="p-2 hover:bg-white rounded-lg transition-colors shadow-sm"
-              title="Voir"
-            >
-              <Eye className="w-4 h-4 text-gray-600" />
-            </Link>
-            <Link
-              href={`/dashboard/courses/${course.id}/edit`}
-              className="p-2 hover:bg-white rounded-lg transition-colors shadow-sm"
-              title="Modifier"
-            >
-              <Edit className="w-4 h-4 text-gray-600" />
-            </Link>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

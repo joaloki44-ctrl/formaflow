@@ -1,11 +1,11 @@
 {
   "name": "FormaFlow",
   "short_name": "FormaFlow",
-  "description": "LMS intelligent et immersif pour l'apprentissage du futur",
+  "description": "LMS moderne et minimaliste pour les créateurs exigeants",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#faf9f6",
-  "theme_color": "#ff6b4a",
+  "background_color": "#F8F9FA",
+  "theme_color": "#2563EB",
   "icons": [
     {
       "src": "/icon-192.png",
