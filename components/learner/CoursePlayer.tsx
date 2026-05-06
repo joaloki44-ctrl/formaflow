@@ -1,19 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  CheckCircle, 
+  CheckCircle2,
   Circle, 
   ChevronRight, 
   ChevronLeft,
   Play,
   FileText,
   HelpCircle,
-  Award,
   Menu,
-  X
+  X,
+  Users,
+  Smartphone
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -52,12 +53,10 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [completing, setCompleting] = useState(false);
 
-  // Trouver la leçon active
   const activeLesson = course.modules
     .flatMap((m) => m.lessons)
     .find((l) => l.id === activeLessonId);
 
-  // Calculer la progression
   const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
   const completedCount = completedLessons.size;
   const progressPercent = Math.round((completedCount / totalLessons) * 100);
@@ -108,12 +107,11 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
     return allLessons[allLessons.length - 1]?.id === activeLessonId;
   };
 
-  // Rendu du contenu selon le type
   const renderLessonContent = (lesson: Lesson) => {
     if (!lesson.content) {
       return (
-        <div className="text-center py-12 text-muted">
-          <p>Aucun contenu pour cette leçon</p>
+        <div className="text-center py-20 text-muted">
+          <p className="font-medium">Aucun contenu disponible pour cette leçon.</p>
         </div>
       );
     }
@@ -122,55 +120,59 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
       const blocks = JSON.parse(lesson.content);
       
       return (
-        <div className="space-y-6">
+        <div className="space-y-8">
           {blocks.map((block: any) => {
             switch (block.type) {
               case "heading":
-                return <h2 key={block.id} className="text-2xl font-bold">{block.content}</h2>;
+                return <h2 key={block.id} className="text-3xl font-bold text-primary tracking-tight">{block.content}</h2>;
               
               case "heading2":
-                return <h3 key={block.id} className="text-xl font-semibold">{block.content}</h3>;
+                return <h3 key={block.id} className="text-xl font-bold text-primary">{block.content}</h3>;
               
               case "text":
-                return <p key={block.id} className="leading-relaxed text-gray-700">{block.content}</p>;
+                return <p key={block.id} className="text-lg leading-relaxed text-gray-700">{block.content}</p>;
               
               case "image":
                 return (
-                  <div key={block.id} className="my-6">
+                  <div key={block.id} className="my-10">
                     <img 
                       src={block.metadata?.url} 
                       alt={block.metadata?.alt || ""}
-                      className="rounded-xl max-h-96 object-cover"
+                      className="rounded-xl w-full object-cover shadow-sm border border-gray-100"
                     />
                   </div>
                 );
               
               case "video":
                 return (
-                  <div key={block.id} className="aspect-video bg-gray-900 rounded-xl flex items-center justify-center my-6">
-                    <Play className="w-16 h-16 text-white/50" />
+                  <div key={block.id} className="aspect-video bg-primary rounded-xl flex items-center justify-center my-10 shadow-lg overflow-hidden relative group">
+                    <div className="absolute inset-0 bg-secondary/10 group-hover:bg-secondary/20 transition-colors" />
+                    <Play className="w-16 h-16 text-white relative z-10 drop-shadow-md group-hover:scale-110 transition-transform" />
                   </div>
                 );
               
               case "list":
                 return (
-                  <ul key={block.id} className="list-disc list-inside space-y-2 pl-4">
+                  <ul key={block.id} className="space-y-4 pl-2">
                     {block.content.split('\n').map((item: string, i: number) => (
-                      <li key={i}>{item}</li>
+                      <li key={i} className="flex items-start gap-3 text-gray-700 leading-relaxed">
+                        <div className="w-1.5 h-1.5 rounded-full bg-secondary mt-2.5 shrink-0" />
+                        <span>{item}</span>
+                      </li>
                     ))}
                   </ul>
                 );
               
               case "quote":
                 return (
-                  <blockquote key={block.id} className="border-l-4 border-[#ff6b4a] pl-4 italic text-gray-600">
+                  <blockquote key={block.id} className="bg-gray-50 border-l-4 border-secondary p-8 rounded-r-xl italic text-gray-600 text-lg shadow-sm">
                     {block.content}
                   </blockquote>
                 );
               
               case "code":
                 return (
-                  <pre key={block.id} className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto">
+                  <pre key={block.id} className="bg-primary text-gray-100 p-6 rounded-xl overflow-x-auto text-sm leading-relaxed border border-white/5 shadow-inner">
                     <code>{block.content}</code>
                   </pre>
                 );
@@ -182,13 +184,12 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
         </div>
       );
     } catch {
-      // Fallback si pas de JSON (contenu simple)
-      return <p className="leading-relaxed">{lesson.content}</p>;
+      return <p className="text-lg leading-relaxed text-gray-700">{lesson.content}</p>;
     }
   };
 
   return (
-    <div className="flex h-screen bg-[#faf9f6]">
+    <div className="flex h-screen bg-white">
       {/* Sidebar */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -196,44 +197,43 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
             initial={{ x: -320 }}
             animate={{ x: 0 }}
             exit={{ x: -320 }}
-            className="fixed md:relative w-80 bg-white border-r border-gray-200 h-full z-50 overflow-y-auto"
+            className="fixed md:relative w-80 bg-gray-50 border-r border-gray-100 h-full z-50 overflow-y-auto flex flex-col"
           >
             {/* Header Sidebar */}
-            <div className="p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-serif text-xl truncate">{course.title}</h2>
+            <div className="p-6 border-b border-gray-100 sticky top-0 bg-gray-50 z-10">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="font-bold text-lg text-primary truncate pr-4">{course.title}</h2>
                 <button 
                   onClick={() => setSidebarOpen(false)}
-                  className="md:hidden p-2"
+                  className="p-1.5 hover:bg-gray-200 rounded-md transition-colors"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4 text-muted" />
                 </button>
               </div>
               
               {/* Progress bar */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted">Progression</span>
-                  <span className="font-medium">{progressPercent}%</span>
+              <div className="space-y-3">
+                <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-muted">
+                  <span>Progression</span>
+                  <span className="text-secondary">{progressPercent}%</span>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-[#ff6b4a] to-[#f09340] transition-all duration-500"
-                    style={{ width: `${progressPercent}%` }}
+                <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progressPercent}%` }}
+                    className="h-full bg-secondary"
+                    transition={{ duration: 1 }}
                   />
                 </div>
-                <p className="text-xs text-muted">
-                  {completedCount} / {totalLessons} leçons terminées
-                </p>
               </div>
             </div>
 
             {/* Modules List */}
-            <div className="p-4 space-y-4">
+            <div className="flex-1 p-4 space-y-8">
               {course.modules.map((module, moduleIndex) => (
                 <div key={module.id}>
-                  <h3 className="font-semibold text-sm text-gray-500 mb-2 px-2">
-                    Module {moduleIndex + 1}: {module.title}
+                  <h3 className="font-bold text-[10px] uppercase tracking-[0.2em] text-muted mb-4 px-2">
+                    Module {moduleIndex + 1} • {module.title}
                   </h3>
                   <div className="space-y-1">
                     {module.lessons.map((lesson) => {
@@ -244,27 +244,24 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
                         <button
                           key={lesson.id}
                           onClick={() => setActiveLessonId(lesson.id)}
-                          className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all ${
+                          className={`w-full group flex items-center gap-3 p-3 rounded-lg text-left transition-all ${
                             isActive 
-                              ? "bg-[#ff6b4a]/10 text-[#ff6b4a]" 
-                              : "hover:bg-gray-50"
+                              ? "bg-white text-primary shadow-sm border border-gray-100 font-bold"
+                              : "text-muted hover:text-primary hover:bg-gray-100"
                           }`}
                         >
-                          {isCompleted ? (
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                          ) : (
-                            <Circle className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-[#ff6b4a]' : 'text-gray-300'}`} />
-                          )}
+                          <div className="shrink-0">
+                            {isCompleted ? (
+                              <CheckCircle2 className="w-4 h-4 text-green-500" />
+                            ) : (
+                              <Circle className={`w-4 h-4 ${isActive ? 'text-secondary' : 'text-gray-300'}`} />
+                            )}
+                          </div>
                           
                           <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-medium truncate ${isActive ? 'text-[#ff6b4a]' : ''}`}>
+                            <p className="text-sm truncate">
                               {lesson.title}
                             </p>
-                            <div className="flex items-center gap-1 mt-0.5">
-                              {lesson.type === 'VIDEO' && <Play className="w-3 h-3 text-gray-400" />}
-                              {lesson.type === 'TEXT' && <FileText className="w-3 h-3 text-gray-400" />}
-                              {lesson.type === 'QUIZ' && <HelpCircle className="w-3 h-3 text-gray-400" />}
-                            </div>
                           </div>
                         </button>
                       );
@@ -279,27 +276,28 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-y-auto">
-        {/* Top Bar */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
+        {/* Top Navigation */}
+        <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between z-10">
           <div className="flex items-center gap-4">
             {!sidebarOpen && (
               <button 
                 onClick={() => setSidebarOpen(true)}
-                className="p-2 hover:bg-gray-100 rounded-lg"
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                <Menu className="w-5 h-5" />
+                <Menu className="w-5 h-5 text-primary" />
               </button>
             )}
-            <span className="text-sm text-muted">
-              {course.modules.find(m => m.lessons.some(l => l.id === activeLessonId))?.title}
-            </span>
+            <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[10px] font-bold text-gray-600 uppercase tracking-wider">Direct</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
             {!isFirstLesson() && (
               <button 
                 onClick={() => navigateLesson("prev")}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded-lg transition-all text-xs font-bold text-primary"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Précédent
@@ -309,7 +307,7 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
             {!isLastLesson() && (
               <button 
                 onClick={() => navigateLesson("next")}
-                className="flex items-center gap-2 px-4 py-2 bg-[#1a1a1a] text-white rounded-lg hover:bg-[#333] transition-colors"
+                className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all text-xs font-bold"
               >
                 Suivant
                 <ChevronRight className="w-4 h-4" />
@@ -318,47 +316,50 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
           </div>
         </div>
 
-        {/* Lesson Content */}
-        <div className="flex-1 p-8 max-w-4xl mx-auto w-full">
+        {/* Content Area */}
+        <div className="flex-1 p-8 md:p-16 lg:p-24 max-w-5xl mx-auto w-full">
           {activeLesson ? (
             <motion.div
               key={activeLesson.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
             >
-              <h1 className="font-serif text-3xl mb-8">{activeLesson.title}</h1>
+              <div className="mb-16">
+                <span className="text-secondary font-bold text-xs uppercase tracking-[0.3em] mb-4 block">Leçon en cours</span>
+                <h1 className="text-4xl md:text-5xl font-bold text-primary tracking-tight leading-tight">{activeLesson.title}</h1>
+              </div>
               
-              {renderLessonContent(activeLesson)}
+              <article className="prose prose-lg max-w-none">
+                {renderLessonContent(activeLesson)}
+              </article>
 
-              {/* Completion Button */}
-              <div className="mt-12 pt-8 border-t border-gray-200">
+              {/* Completion Action */}
+              <div className="mt-20 pt-12 border-t border-gray-100">
                 {completedLessons.has(activeLesson.id) ? (
-                  <div className="flex items-center justify-center gap-2 text-green-600 bg-green-50 py-4 rounded-xl">
-                    <CheckCircle className="w-5 h-5" />
-                    <span className="font-medium">Leçon terminée !</span>
+                  <div className="flex items-center gap-4 p-6 bg-green-50 rounded-xl border border-green-100">
+                    <div className="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-green-700">Leçon validée !</p>
+                      <p className="text-sm text-green-600 font-medium">Continuez sur votre lancée.</p>
+                    </div>
                   </div>
                 ) : (
                   <button
                     onClick={handleComplete}
                     disabled={completing}
-                    className="w-full py-4 bg-gradient-to-r from-[#ff6b4a] to-[#f09340] text-white rounded-xl font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-5 bg-secondary text-white rounded-xl font-bold text-lg hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/10 disabled:opacity-50"
                   >
-                    {completing ? (
-                      "..."
-                    ) : (
-                      <>
-                        <CheckCircle className="w-5 h-5" />
-                        Marquer comme terminée
-                      </>
-                    )}
+                    {completing ? "Validation en cours..." : "Marquer comme terminée"}
                   </button>
                 )}
               </div>
             </motion.div>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-muted">Sélectionnez une leçon pour commencer</p>
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <p className="text-muted font-medium">Sélectionnez une leçon pour commencer.</p>
             </div>
           )}
         </div>

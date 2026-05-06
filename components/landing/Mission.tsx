@@ -1,59 +1,46 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { Target, Zap, Heart } from "lucide-react";
-import Link from "next/link";
 
-const missions = [
-  {
-    icon: Target,
-    title: "Centré sur la pédagogie",
-    description: "Un outil centré sur la pédagogie qui met en valeur votre expertise et maintient vos apprenants engagés grâce à une politique d'innovation continue.",
-  },
+const values = [
   {
     icon: Zap,
-    title: "Simple d'utilisation",
-    description: "Une plateforme simple et hautement personnalisable, que vous pouvez relier à tous vos outils existants ou presque !",
+    title: "Vitesse",
+    description: "Lancez votre formation en quelques minutes grâce à notre éditeur de blocs intuitif."
+  },
+  {
+    icon: Target,
+    title: "Focus",
+    description: "Concentrez-vous sur votre contenu, nous gérons toute la complexité technique."
   },
   {
     icon: Heart,
-    title: "Humain à toutes les étapes",
-    description: "Rejoignez la communauté, participez à nos masterclass exclusives, échangez avec notre service client en quelques clics.",
-  },
+    title: "Expérience",
+    description: "Une interface fluide conçue pour maximiser l'engagement de vos apprenants."
+  }
 ];
 
 export default function Mission() {
   return (
-    <section id="mission" className="py-24 bg-dark text-[#f5f5f5]">
+    <section id="mission" className="py-24 bg-white">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl mb-4">Notre mission</h2>
-          <p className="text-muted text-lg max-w-2xl mx-auto">
-            FormaFlow s'engage pour inventer la pédagogie de demain, au service de ceux qui veulent partager !
+        <div className="text-center max-w-3xl mx-auto mb-20">
+          <h2 className="text-sm font-bold text-secondary uppercase tracking-widest mb-3">Notre Vision</h2>
+          <p className="text-4xl font-bold text-primary tracking-tight">
+            L'excellence pédagogique au service de votre expertise.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {missions.map((mission, index) => (
-            <motion.div
-              key={mission.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="p-8 border border-[#333] rounded-2xl hover:border-[#ff6b4a] transition-all hover:-translate-y-1"
-            >
-              <div className="w-14 h-14 bg-gradient-to-br from-[#ff6b4a] to-[#f09340] rounded-xl flex items-center justify-center mb-6">
-                <mission.icon className="w-7 h-7 text-white" />
+        <div className="grid md:grid-cols-3 gap-12">
+          {values.map((value, i) => (
+            <div key={i} className="group">
+              <div className="w-14 h-14 bg-cream rounded-2xl flex items-center justify-center mb-6 group-hover:bg-secondary/10 transition-colors">
+                <value.icon className="w-6 h-6 text-primary group-hover:text-secondary transition-colors" />
               </div>
-              <h3 className="font-serif text-2xl mb-4">{mission.title}</h3>
-              <p className="text-muted leading-relaxed">{mission.description}</p>
-            </motion.div>
+              <h3 className="text-xl font-bold text-primary mb-3">{value.title}</h3>
+              <p className="text-muted leading-relaxed">
+                {value.description}
+              </p>
+            </div>
           ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <Link href="/sign-up" className="btn-primary">Inscription gratuite</Link>
         </div>
       </div>
     </section>

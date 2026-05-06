@@ -10,28 +10,37 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#1a1a1a",
-          foreground: "#f5f5f5",
+          DEFAULT: "#121212", // Anthracite
+          foreground: "#F8F9FA",
         },
         secondary: {
-          DEFAULT: "#ff6b4a",
+          DEFAULT: "#2563EB", // Electric Blue
           foreground: "#ffffff",
         },
         accent: {
-          DEFAULT: "#6366f1",
+          DEFAULT: "#3B82F6", // Lighter Blue
           foreground: "#ffffff",
         },
-        cream: "#faf9f6",
-        dark: "#0a0a0a",
-        muted: "#888888",
+        cream: "#F8F9FA", // Off-white
+        dark: "#0A0A0A",
+        muted: "#6B7280",
       },
       fontFamily: {
-        serif: ["Instrument Serif", "Georgia", "serif"],
-        sans: ["Space Grotesk", "system-ui", "sans-serif"],
+        serif: ["Inter", "system-ui", "sans-serif"], // Minimalist SaaS prefers clean sans-serif
+        sans: ["Inter", "system-ui", "sans-serif"],
       },
       backgroundImage: {
-        "gradient-warm": "linear-gradient(135deg, #ff6b4a 0%, #f09340 100%)",
-        "gradient-cool": "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+        "gradient-saas": "linear-gradient(135deg, #121212 0%, #1A1A1A 100%)",
+        "gradient-blue": "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)",
+      },
+      animation: {
+        "fade-in": "fadeIn 0.5s ease-out forwards",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        }
       },
     },
   },
