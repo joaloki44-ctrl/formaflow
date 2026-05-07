@@ -1,11 +1,11 @@
 {
-  "name": "FormaFlow",
+  "name": "FormaFlow Elite",
   "short_name": "FormaFlow",
-  "description": "LMS moderne et minimaliste pour les créateurs exigeants",
+  "description": "L'infrastructure pédagogique Elite 2026",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F8F9FA",
-  "theme_color": "#2563EB",
+  "background_color": "#0c0c0c",
+  "theme_color": "#2563eb",
   "icons": [
     {
       "src": "/icon-192.png",
