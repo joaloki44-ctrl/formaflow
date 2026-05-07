@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Eye, Edit, MoreVertical, Globe } from "lucide-react";
+import { Eye, Edit, Users, Globe, BookOpen, Layers, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface Course {
   id: string;
@@ -24,73 +25,87 @@ interface CoursesListProps {
 export default function CoursesList({ courses }: CoursesListProps) {
   if (courses.length === 0) {
     return (
-      <div className="text-center py-20 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200">
-        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-          <Globe className="w-8 h-8 text-gray-300" />
+      <div className="text-center py-32 bg-white/[0.02] rounded-[3rem] border border-white/5">
+        <div className="w-24 h-24 bg-dark rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl border border-white/5">
+          <Layers className="w-10 h-10 text-slate-700" />
         </div>
-        <p className="text-muted font-medium mb-6">Vous n'avez pas encore créé de formation.</p>
-        <Link href="/dashboard/courses/new" className="bg-secondary text-white px-6 py-3 rounded-lg font-bold hover:bg-secondary/90 transition-all">
-          Créer ma première formation
+        <p className="text-slate-500 font-bold text-xl mb-10 tracking-tight">Votre catalogue est vide.</p>
+        <Link href="/dashboard/courses/new" className="btn-saas-primary">
+          Déployer une Formation
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-      <div className="divide-y divide-gray-100">
-        {courses.map((course) => (
-          <div key={course.id} className="p-5 flex items-center gap-4 hover:bg-gray-50/50 transition-colors">
-            {/* Thumbnail */}
-            <div className="w-20 h-14 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden border border-gray-200">
-              {course.imageUrl ? (
-                <img src={course.imageUrl} alt={course.title} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold text-xs">
-                  NO IMG
-                </div>
-              )}
-            </div>
+    <div className="space-y-6">
+      {courses.map((course, i) => (
+        <motion.div
+          key={course.id}
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: i * 0.1 }}
+          className="group p-6 bg-white/[0.01] hover:bg-white/[0.03] border border-white/5 hover:border-white/10 rounded-[2rem] flex flex-col md:flex-row items-center gap-8 transition-all duration-500 shadow-2xl"
+        >
+          {/* Elite Thumbnail */}
+          <div className="w-full md:w-32 h-24 bg-dark rounded-[1.5rem] flex-shrink-0 overflow-hidden relative border border-white/5 shadow-inner group-hover:scale-105 transition-transform duration-500">
+            {course.imageUrl ? (
+              <img src={course.imageUrl} alt={course.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-125" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-3xl">
+                {course.title[0]}
+              </div>
+            )}
+            <div className="absolute inset-0 bg-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
 
-            {/* Info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-bold text-primary truncate">{course.title}</h3>
+          {/* Detailed Info */}
+          <div className="flex-1 min-w-0 text-center md:text-left">
+            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+              <h3 className="font-bold text-white truncate text-2xl tracking-tighter group-hover:text-secondary transition-colors">{course.title}</h3>
+              <div className="flex justify-center gap-2">
                 {course.isPublished ? (
-                  <span className="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold uppercase rounded border border-green-100 tracking-wider">Publié</span>
+                  <span className="px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border border-emerald-500/20">Actif</span>
                 ) : (
-                  <span className="px-2 py-0.5 bg-gray-50 text-gray-600 text-[10px] font-bold uppercase rounded border border-gray-100 tracking-wider">Brouillon</span>
+                  <span className="px-3 py-1 bg-white/5 text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border border-white/5">Brouillon</span>
                 )}
               </div>
-              <p className="text-xs font-medium text-muted flex items-center gap-2">
-                <span className="text-primary">{course._count.enrollments} apprenants</span>
-                <span>•</span>
-                <span>{course._count.modules} modules</span>
-                <span>•</span>
-                <span className="text-primary font-bold">{course.price === 0 ? 'Gratuit' : `${course.price}€`}</span>
-              </p>
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-              <Link
-                href={`/dashboard/courses/${course.id}`}
-                className="p-2 text-muted hover:text-primary hover:bg-gray-100 rounded-lg transition-all"
-                title="Consulter"
-              >
-                <Eye className="w-4 h-4" />
-              </Link>
-              <Link
-                href={`/dashboard/courses/${course.id}/edit`}
-                className="p-2 text-muted hover:text-primary hover:bg-gray-100 rounded-lg transition-all"
-                title="Modifier"
-              >
-                <Edit className="w-4 h-4" />
-              </Link>
+            <div className="flex flex-wrap justify-center md:justify-start items-center gap-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-dark rounded-xl border border-white/5">
+                <Users className="w-4 h-4 text-secondary" />
+                <span className="text-white">{course._count.enrollments}</span> Apprenants
+              </div>
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4" />
+                <span>{course._count.modules} Modules</span>
+              </div>
+              <div className="flex items-center gap-2 ml-auto text-secondary text-lg tracking-tighter normal-case font-black">
+                {course.price === 0 ? 'Gratuit' : `${course.price}€`}
+              </div>
             </div>
           </div>
-        ))}
-      </div>
+
+          {/* Quick Actions - Pro UI */}
+          <div className="flex items-center gap-3 md:opacity-0 md:group-hover:opacity-100 transition-all md:translate-x-4 md:group-hover:translate-x-0">
+            <Link
+              href={`/dashboard/courses/${course.id}`}
+              className="p-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl border border-white/10 transition-all"
+              title="Aperçu"
+            >
+              <Eye className="w-6 h-6" />
+            </Link>
+            <Link
+              href={`/dashboard/courses/${course.id}/edit`}
+              className="p-4 bg-secondary/10 hover:bg-secondary text-white rounded-2xl border border-secondary/20 transition-all shadow-neon"
+              title="Modifier"
+            >
+              <Edit className="w-6 h-6" />
+            </Link>
+          </div>
+        </motion.div>
+      ))}
     </div>
   );
 }
