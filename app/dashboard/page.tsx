@@ -45,12 +45,18 @@ export default async function DashboardPage() {
     },
   });
 
-  const totalRevenue = await prisma.enrollment.aggregate({
+  const enrollmentsWithPrice = await prisma.enrollment.findMany({
     where: {
       course: { instructorId: user.id },
     },
-    _sum: { course: { select: { price: true } } },
+    include: {
+      course: {
+        select: { price: true },
+      },
+    },
   });
+
+  const totalRevenue = enrollmentsWithPrice.reduce((sum, e) => sum + e.course.price, 0);
 
   return (
     <div className="md:ml-80 bg-dark min-h-screen relative overflow-hidden">
@@ -62,7 +68,7 @@ export default async function DashboardPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20">
           <div>
             <div className="flex items-center gap-3 text-secondary mb-4">
-              <Sparkles className="w-5 h-5 fill-secondary shadow-neon" />
+              <Sparkles className="w-5 h-5 fill-secondary" />
               <span className="text-[10px] font-black uppercase tracking-[0.4em]">Console de Commandement</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-black text-white tracking-tighter leading-none mb-6">
@@ -77,7 +83,7 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard/courses/new"
-              className="btn-saas-primary py-5 px-10 flex items-center gap-4 group shadow-neon"
+              className="btn-saas-primary py-5 px-10 flex items-center gap-4 group"
             >
               <PlusCircle className="w-6 h-6 transition-transform group-hover:rotate-90" />
               <span className="text-sm font-black uppercase tracking-widest">Nouveau Contenu</span>
@@ -90,7 +96,7 @@ export default async function DashboardPage() {
           <DashboardStats
             totalCourses={totalCourses}
             totalStudents={totalStudents}
-            totalRevenue={totalRevenue._sum?.price || 0}
+            totalRevenue={totalRevenue}
           />
         </div>
 
@@ -116,10 +122,10 @@ export default async function DashboardPage() {
 
           {/* Sidebar Widgets - Bento Box Smaller */}
           <div className="lg:col-span-4 space-y-8">
-            <div className="bento-card bg-secondary/10 border-secondary/20 shadow-neon relative overflow-hidden group">
+            <div className="bento-card bg-secondary/10 border-secondary/20 relative overflow-hidden group">
               <div className="relative z-10">
                 <div className="flex items-center gap-3 text-secondary mb-6">
-                  <ShieldCheck className="w-5 h-5 fill-secondary shadow-neon" />
+                  <ShieldCheck className="w-5 h-5 fill-secondary" />
                   <h3 className="text-sm font-black uppercase tracking-widest">Sécurité Système</h3>
                 </div>
                 <p className="text-white text-lg font-bold mb-8 leading-tight">
