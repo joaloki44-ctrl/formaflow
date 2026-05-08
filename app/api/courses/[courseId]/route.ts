@@ -15,8 +15,18 @@ export async function GET(
       include: {
         modules: {
           orderBy: { position: "asc" },
-          include: { lessons: { orderBy: { position: "asc" } } },
+          include: {
+            lessons: {
+              orderBy: { position: "asc" },
+              include: { attachments: true }
+            }
+          },
         },
+        reviews: {
+          include: { user: { select: { firstName: true, imageUrl: true } } },
+          orderBy: { createdAt: "desc" }
+        },
+        _count: { select: { enrollments: true } }
       },
     });
 

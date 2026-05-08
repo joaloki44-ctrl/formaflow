@@ -25,9 +25,16 @@ export async function getOrCreateUser() {
         firstName: clerkUser.firstName || "",
         lastName: clerkUser.lastName || "",
         imageUrl: clerkUser.imageUrl || "",
-        role: "INSTRUCTOR", // Default role
+        role: "INSTRUCTOR",
+        lastActiveAt: new Date(),
       },
     });
+  } else {
+    // Background update of last activity (non-blocking)
+    prisma.user.update({
+      where: { id: user.id },
+      data: { lastActiveAt: new Date() }
+    }).catch(console.error);
   }
 
   return user;
