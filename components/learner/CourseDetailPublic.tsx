@@ -18,16 +18,15 @@ export default function CourseDetailPublic({ course }: any) {
     }
 
     try {
-      const response = await fetch("/api/checkout", {
+      const response = await fetch("/api/enrollments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ courseId: course.id }),
       });
 
-      const data = await response.json();
-
       if (response.ok) {
-        window.location.href = data.url;
+        toast.success("Inscription réussie !");
+        router.push(`/courses/${course.id}/learn`);
       } else {
         throw new Error("Erreur lors de l'inscription");
       }

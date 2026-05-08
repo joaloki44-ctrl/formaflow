@@ -126,7 +126,7 @@ export default function CourseDetail({ course }: { course: Course }) {
                             
                             <div className="flex items-center gap-1">
                               <Link 
-                                href={`/dashboard/courses/${course.id}/modules/${module.id}/lessons/${lesson.id}/edit`}
+                                href={`/dashboard/courses/${course.id}/lessons/${lesson.id}/edit`}
                                 className="p-1.5 hover:bg-gray-200 rounded"
                               >
                                 <Edit2 className="w-3.5 h-3.5 text-gray-400" />
