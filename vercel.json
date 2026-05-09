@@ -1,1 +1,5 @@
-{"version":2,"framework":"nextjs","regions":["cdg1"]}
+{
+  "version": 2,
+  "framework": "nextjs",
+  "regions": ["cdg1"]
+}

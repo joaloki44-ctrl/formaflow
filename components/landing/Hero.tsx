@@ -2,129 +2,70 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Star, PlayCircle, MousePointer2, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative pt-64 pb-32 lg:pt-80 lg:pb-48 overflow-hidden min-h-screen flex items-center bg-dark">
+    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-cream">
       <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-6xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5 }}
           >
-            {/* Elite Badge */}
-            <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-secondary text-xs font-black uppercase tracking-[0.4em] mb-12 backdrop-blur-md animate-glow">
-              <span className="relative flex h-2.5 w-2.5">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-sm font-semibold mb-6">
+              <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-secondary"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
               </span>
-              L'Elite du LMS • 2026
-            </div>
-
-            {/* Massive Typography */}
-            <h1 className="text-7xl lg:text-9xl font-extrabold tracking-tighter text-white mb-12 leading-[0.85] filter drop-shadow-2xl">
-              CONSTRUISEZ <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-b from-secondary to-blue-600 inline-block relative">
-                L'EXCEPTION.
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: "100%" }}
-                  transition={{ delay: 1, duration: 1 }}
-                  className="absolute bottom-4 left-0 h-2 bg-secondary/20 -z-10 rounded-full blur-sm"
-                />
-              </span>
+              LMS Nouvelle Génération
+            </span>
+            <h1 className="text-5xl lg:text-7xl font-bold tracking-tight text-primary mb-8">
+              Créez vos formations <br />
+              <span className="text-secondary">sans compromis.</span>
             </h1>
-
-            <p className="text-2xl lg:text-3xl text-slate-400 mb-16 max-w-3xl mx-auto leading-tight font-medium tracking-tight">
-              Oubliez les outils génériques. FormaFlow est l'infrastructure d'élite pour les créateurs qui redéfinissent les standards.
+            <p className="text-xl text-muted mb-10 max-w-2xl mx-auto leading-relaxed">
+              La plateforme LMS la plus intuitive pour les créateurs exigeants.
+              Gérez vos contenus, engagez vos apprenants et développez votre activité.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/sign-up"
-                className="btn-saas-primary text-xl py-6 px-12 flex items-center justify-center gap-4 group relative overflow-hidden"
+                className="w-full sm:w-auto px-8 py-4 bg-secondary text-white rounded-lg font-bold hover:bg-secondary/90 transition-all flex items-center justify-center gap-2 group"
               >
-                <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                <span className="relative z-10 flex items-center gap-4">
-                  Démarrer Maintenant
-                  <ArrowRight className="w-7 h-7 group-hover:translate-x-1 transition-transform" />
-                </span>
+                Démarrer gratuitement
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button
-                className="btn-saas-outline text-xl py-6 px-12 flex items-center justify-center gap-4 group"
+              <Link
+                href="#features"
+                className="w-full sm:w-auto px-8 py-4 bg-white border border-gray-200 text-primary rounded-lg font-bold hover:bg-gray-50 transition-all"
               >
-                <PlayCircle className="w-7 h-7 text-secondary" />
-                <span>Voir la démo</span>
-              </button>
+                Voir les fonctionnalités
+              </Link>
             </div>
 
-            {/* Premium Social Proof */}
-            <div className="mt-32 flex flex-col items-center gap-8">
-              <div className="flex -space-x-4">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ y: -5, zIndex: 10 }}
-                    className="w-14 h-14 rounded-2xl bg-dark border-2 border-white/10 shadow-2xl overflow-hidden cursor-pointer p-0.5"
-                  >
-                    <img src={`https://i.pravatar.cc/100?img=${i+20}`} alt="user" className="w-full h-full object-cover rounded-xl" />
-                  </motion.div>
-                ))}
+            <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-sm text-muted font-medium">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-secondary" />
+                Installation en 2 min
               </div>
-              <div className="flex flex-col items-center gap-2">
-                <div className="flex items-center gap-1.5 text-amber-400">
-                  {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-5 h-5 fill-current" />)}
-                </div>
-                <p className="text-sm font-black text-slate-500 uppercase tracking-[0.3em]">
-                  Plébiscité par +1,500 Leaders de l'industrie
-                </p>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-secondary" />
+                Sans carte bancaire
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-secondary" />
+                Support prioritaire
               </div>
             </div>
           </motion.div>
         </div>
       </div>
 
-      {/* Extreme Visual Depth - Aceternity Inspired */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden -z-20">
-        {/* Animated Orbs */}
-        <motion.div
-          animate={{
-            x: [0, 100, 0],
-            y: [0, -50, 0],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[10%] left-[-5%] w-[800px] h-[800px] bg-secondary/10 blur-[150px] rounded-full opacity-50"
-        />
-        <motion.div
-          animate={{
-            x: [0, -100, 0],
-            y: [0, 50, 0],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-10%] right-[-5%] w-[700px] h-[700px] bg-blue-500/5 blur-[120px] rounded-full opacity-40"
-        />
-
-        {/* Elite Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-
-        {/* Floating Icon Decorations */}
-        <motion.div
-          animate={{ y: [0, -20, 0], rotate: [0, 10, 0] }}
-          transition={{ duration: 6, repeat: Infinity }}
-          className="absolute top-[30%] right-[15%] text-secondary/20"
-        >
-          <MousePointer2 className="w-16 h-16" />
-        </motion.div>
-        <motion.div
-          animate={{ y: [0, 20, 0], rotate: [0, -10, 0] }}
-          transition={{ duration: 8, repeat: Infinity, delay: 1 }}
-          className="absolute bottom-[20%] left-[10%] text-blue-400/10"
-        >
-          <Sparkles className="w-20 h-20" />
-        </motion.div>
-      </div>
+      {/* Decorative Elements */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-secondary/5 blur-[120px] rounded-full pointer-events-none" />
     </section>
   );
 }
