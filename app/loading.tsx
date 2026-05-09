@@ -10,23 +10,13 @@ export default function Loading() {
       </div>
 
       <div className="mt-8 flex flex-col items-center gap-3">
-        <p className="text-xs font-bold text-muted uppercase tracking-widest">
+        <p className="text-xs font-bold text-muted uppercase tracking-widest animate-pulse">
           Chargement en cours...
         </p>
         <div className="w-40 h-1 bg-gray-100 rounded-full overflow-hidden">
           <div className="h-full bg-secondary w-1/2 rounded-full animate-shimmer" />
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(300%); }
-        }
-        .animate-shimmer {
-          animation: shimmer 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-      `}</style>
     </div>
   );
 }
