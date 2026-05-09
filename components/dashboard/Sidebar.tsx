@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, BookOpen, Users, Settings, BarChart3, LogOut, Rocket, Zap, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, BookOpen, Users, Settings, BarChart3, LogOut, Rocket, Zap } from "lucide-react";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 
@@ -17,10 +17,6 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { user } = useUser();
-
-  // On the client side, we check if the user has specific public metadata or we can fetch a local /api/me
-  // For now, let's assume Elite is based on a condition or just visual for the demo
-  const isElite = true;
 
   return (
     <aside className="hidden md:flex w-80 bg-dark border-r border-white/5 flex-col h-screen fixed left-0 top-0 z-50 p-8">
@@ -76,10 +72,8 @@ export default function Sidebar() {
           <div className="flex-1 min-w-0">
             <p className="text-xs font-black text-white truncate uppercase tracking-widest">{user?.firstName} {user?.lastName}</p>
             <div className="flex items-center gap-1.5 mt-1">
-              {isElite ? <ShieldCheck className="w-2.5 h-2.5 text-secondary fill-secondary" /> : <Zap className="w-2.5 h-2.5 text-slate-500" />}
-              <p className="text-[10px] font-black text-secondary truncate uppercase tracking-tighter">
-                {isElite ? "Elite Status" : "Standard Node"}
-              </p>
+              <Zap className="w-2.5 h-2.5 text-secondary fill-secondary" />
+              <p className="text-[10px] font-black text-secondary truncate uppercase tracking-tighter">Elite Status</p>
             </div>
           </div>
         </div>
