@@ -60,12 +60,13 @@ export default async function DashboardPage() {
     },
   });
 
-  const totalRevenue = await prisma.enrollment.aggregate({
+  const enrollmentsWithPrice = await prisma.enrollment.findMany({
     where: {
       course: { instructorId: user.id },
     },
-    _sum: { course: { select: { price: true } } },
+    include: { course: { select: { price: true } } },
   });
+  const totalRevenue = enrollmentsWithPrice.reduce((sum, e) => sum + e.course.price, 0);
 
   return (
     <div className="md:ml-80 bg-dark min-h-screen relative overflow-hidden">
@@ -105,7 +106,7 @@ export default async function DashboardPage() {
           <DashboardStats
             totalCourses={totalCourses}
             totalStudents={totalStudents}
-            totalRevenue={totalRevenue._sum?.price || 0}
+            totalRevenue={totalRevenue}
           />
         </div>
 
