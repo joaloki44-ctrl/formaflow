@@ -1,9 +1,21 @@
 import { authMiddleware } from "@clerk/nextjs";
-import { NextResponse } from "next/server";
 
 export default authMiddleware({
-  publicRoutes: ["/", "/sign-in", "/sign-up", "/api/webhook/clerk", "/courses", "/courses/:courseId"],
-  ignoredRoutes: ["/api/webhook/clerk"],
+  // Routes accessibles sans authentification
+  publicRoutes: [
+    "/",
+    "/sign-in",
+    "/sign-up",
+    "/api/webhook/clerk",
+    "/api/webhook/stripe",
+    "/courses",
+    "/courses/(.*)", // Toutes les pages de détails de cours
+  ],
+  // Routes ignorées par Clerk
+  ignoredRoutes: [
+    "/api/webhook/clerk",
+    "/api/webhook/stripe",
+  ],
 });
 
 export const config = {

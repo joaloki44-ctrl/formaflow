@@ -33,7 +33,7 @@ export default function NewLessonPage({ params }: NewLessonPageProps) {
   const handleCreate = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/modules/${params.moduleId}/lessons`, {
+      const response = await fetch(`/api/courses/${params.courseId}/modules/${params.moduleId}/lessons`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(lessonData),
