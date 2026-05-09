@@ -116,7 +116,6 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
       return (
         <div className="flex flex-col items-center justify-center py-40 opacity-20">
           <Zap className="w-20 h-20 mb-8" />
-  DownloadCloud
           <p className="font-black uppercase tracking-[0.5em] text-xs">Infrastructure en attente de données</p>
         </div>
       );
@@ -191,12 +190,6 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
                 return null;
             }
           })}
-        </div>
-      );
-    } catch {
-      return <p className="text-xl leading-relaxed text-slate-400 max-w-[65ch] font-medium">{lesson.content}</p>;
-    }
-  };
 
           {lesson.attachments && lesson.attachments.length > 0 && (
             <div className="mt-20 p-10 bg-white/[0.02] border border-white/5 rounded-[2rem]">
@@ -219,6 +212,13 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
               </div>
             </div>
           )}
+        </div>
+      );
+    } catch {
+      return <p className="text-xl leading-relaxed text-slate-400 max-w-[65ch] font-medium">{lesson.content}</p>;
+    }
+  };
+
   return (
     <div className="flex h-screen bg-dark">
       {/* Cinematic Sidebar */}
