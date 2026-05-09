@@ -16,7 +16,8 @@ import {
   Smartphone,
   ArrowLeft,
   Sparkles,
-  Zap
+  Zap,
+  DownloadCloud
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -26,6 +27,7 @@ interface Lesson {
   type: string;
   content: string | null;
   isPublished: boolean;
+  attachments?: any[];
 }
 
 interface Module {
@@ -188,6 +190,28 @@ export default function CoursePlayer({ course, completedLessons, enrollmentId }:
                 return null;
             }
           })}
+
+          {lesson.attachments && lesson.attachments.length > 0 && (
+            <div className="mt-20 p-10 bg-white/[0.02] border border-white/5 rounded-[2rem]">
+              <h4 className="text-xs font-black text-slate-500 uppercase tracking-[0.4em] mb-8">Ressources & Protocoles</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {lesson.attachments.map((file: any) => (
+                  <a
+                    key={file.id}
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 p-5 bg-dark rounded-2xl border border-white/5 hover:border-secondary/30 transition-all group"
+                  >
+                    <div className="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+                      <DownloadCloud className="w-5 h-5" />
+                    </div>
+                    <span className="text-sm font-bold text-white truncate">{file.name}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       );
     } catch {

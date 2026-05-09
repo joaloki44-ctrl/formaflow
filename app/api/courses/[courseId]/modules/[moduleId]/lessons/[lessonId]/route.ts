@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs";
+import { getOrCreateUser } from "@/lib/user-utils";
 
 export async function PATCH(
   req: Request,
   { params }: { params: { courseId: string; moduleId: string; lessonId: string } }
 ) {
   try {
-    const { userId } = auth();
-    if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return new NextResponse("Non autorisé", { status: 401 });
 
     const values = await req.json();
 
@@ -23,7 +23,7 @@ export async function PATCH(
     return NextResponse.json(lesson);
   } catch (error) {
     console.error("[LESSON_PATCH]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return new NextResponse("Erreur interne", { status: 500 });
   }
 }
 
@@ -32,8 +32,8 @@ export async function DELETE(
   { params }: { params: { courseId: string; moduleId: string; lessonId: string } }
 ) {
   try {
-    const { userId } = auth();
-    if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return new NextResponse("Non autorisé", { status: 401 });
 
     const lesson = await prisma.lesson.delete({
       where: {
@@ -45,6 +45,6 @@ export async function DELETE(
     return NextResponse.json(lesson);
   } catch (error) {
     console.error("[LESSON_DELETE]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return new NextResponse("Erreur interne", { status: 500 });
   }
 }

@@ -1,25 +1,32 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs";
+import { getOrCreateUser } from "@/lib/user-utils";
 
 export async function GET(
   req: Request,
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const { userId } = auth();
-    if (!userId) return new NextResponse("Non autorisé", { status: 401 });
-
-    const user = await prisma.user.findUnique({ where: { clerkId: userId } });
-    if (!user) return new NextResponse("Utilisateur non trouvé", { status: 404 });
+    const user = await getOrCreateUser();
+    if (!user) return new NextResponse("Non autorisé", { status: 401 });
 
     const course = await prisma.course.findUnique({
       where: { id: params.courseId, instructorId: user.id },
       include: {
         modules: {
           orderBy: { position: "asc" },
-          include: { lessons: { orderBy: { position: "asc" } } },
+          include: {
+            lessons: {
+              orderBy: { position: "asc" },
+              include: { attachments: true }
+            }
+          },
         },
+        reviews: {
+          include: { user: { select: { firstName: true, imageUrl: true } } },
+          orderBy: { createdAt: "desc" }
+        },
+        _count: { select: { enrollments: true } }
       },
     });
 
@@ -37,11 +44,8 @@ export async function PATCH(
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const { userId } = auth();
-    if (!userId) return new NextResponse("Non autorisé", { status: 401 });
-
-    const user = await prisma.user.findUnique({ where: { clerkId: userId } });
-    if (!user) return new NextResponse("Utilisateur non trouvé", { status: 404 });
+    const user = await getOrCreateUser();
+    if (!user) return new NextResponse("Non autorisé", { status: 401 });
 
     const values = await req.json();
 
@@ -62,11 +66,8 @@ export async function DELETE(
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const { userId } = auth();
-    if (!userId) return new NextResponse("Non autorisé", { status: 401 });
-
-    const user = await prisma.user.findUnique({ where: { clerkId: userId } });
-    if (!user) return new NextResponse("Utilisateur non trouvé", { status: 404 });
+    const user = await getOrCreateUser();
+    if (!user) return new NextResponse("Non autorisé", { status: 401 });
 
     await prisma.course.delete({
       where: { id: params.courseId, instructorId: user.id },

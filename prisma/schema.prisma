@@ -15,14 +15,18 @@ model User {
   lastName      String?
   imageUrl      String?
   role          Role      @default(INSTRUCTOR)
+  isElite       Boolean   @default(false)
+  lastActiveAt  DateTime  @default(now())
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   courses       Course[]
   enrollments   Enrollment[]
+  reviews       Review[]
   certificates  Certificate[]
 
   @@map("users")
+  @@index([clerkId])
 }
 
 model Course {
@@ -34,18 +38,22 @@ model Course {
   isPublished Boolean  @default(false)
   category    String?
   level       Level    @default(BEGINNER)
+  tags        String[] @default([])
   
   instructorId String
   instructor   User     @relation(fields: [instructorId], references: [id], onDelete: Cascade)
   
   modules      Module[]
   enrollments  Enrollment[]
+  reviews      Review[]
   certificates Certificate[]
   
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   @@map("courses")
+  @@index([instructorId])
+  @@index([category])
 }
 
 model Module {
@@ -62,6 +70,7 @@ model Module {
   updatedAt   DateTime @updatedAt
 
   @@map("modules")
+  @@index([courseId])
 }
 
 model Lesson {
@@ -78,11 +87,47 @@ model Lesson {
   
   quizzes     Quiz[]
   progress    Progress[]
+  attachments Attachment[]
   
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@map("lessons")
+  @@index([moduleId])
+}
+
+model Attachment {
+  id        String   @id @default(uuid())
+  name      String
+  url       String   @db.Text
+
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("attachments")
+  @@index([lessonId])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int      @default(5)
+  comment   String?  @db.Text
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId])
+  @@map("reviews")
+  @@index([courseId])
 }
 
 model Quiz {
@@ -97,6 +142,7 @@ model Quiz {
   createdAt DateTime @default(now())
 
   @@map("quizzes")
+  @@index([lessonId])
 }
 
 model Enrollment {
@@ -116,6 +162,8 @@ model Enrollment {
 
   @@unique([userId, courseId])
   @@map("enrollments")
+  @@index([userId])
+  @@index([courseId])
 }
 
 model Progress {
@@ -131,6 +179,8 @@ model Progress {
 
   @@unique([userId, lessonId])
   @@map("progress")
+  @@index([userId])
+  @@index([lessonId])
 }
 
 model Certificate {
@@ -146,6 +196,8 @@ model Certificate {
   
   @@unique([userId, courseId])
   @@map("certificates")
+  @@index([userId])
+  @@index([courseId])
 }
 
 enum Role {

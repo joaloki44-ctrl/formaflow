@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs";
 import { prisma } from "@/lib/prisma";
 import DashboardStats from "@/components/dashboard/DashboardStats";
 import CoursesList from "@/components/dashboard/CoursesList";
@@ -10,15 +10,30 @@ export default async function DashboardPage() {
   const { userId } = auth();
   
   if (!userId) {
-    return null;
+    redirect("/sign-in");
   }
 
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: { clerkId: userId },
   });
 
+  // Handle sync gap
   if (!user) {
-    redirect("/sign-in");
+    const clerkUser = await currentUser();
+    if (!clerkUser) {
+      redirect("/sign-in");
+    }
+
+    user = await prisma.user.create({
+      data: {
+        clerkId: userId,
+        email: clerkUser.emailAddresses[0]?.emailAddress || "",
+        firstName: clerkUser.firstName || "",
+        lastName: clerkUser.lastName || "",
+        imageUrl: clerkUser.imageUrl || "",
+        role: "INSTRUCTOR",
+      },
+    });
   }
 
   const courses = await prisma.course.findMany({
@@ -55,7 +70,6 @@ export default async function DashboardPage() {
       },
     },
   });
-
   const totalRevenue = enrollmentsWithPrice.reduce((sum, e) => sum + e.course.price, 0);
 
   return (

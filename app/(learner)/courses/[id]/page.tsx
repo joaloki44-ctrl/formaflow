@@ -7,7 +7,15 @@ export default async function CoursePage({ params }: { params: { id: string } })
     where: { id: params.id, isPublished: true },
     include: {
       instructor: { select: { firstName: true, lastName: true, imageUrl: true } },
-      modules: { orderBy: { position: "asc" } },
+      modules: {
+        orderBy: { position: "asc" },
+        include: { lessons: { where: { isPublished: true } } }
+      },
+      reviews: {
+        include: { user: { select: { firstName: true, imageUrl: true } } },
+        orderBy: { createdAt: "desc" },
+        take: 10
+      },
       _count: { select: { enrollments: true } },
     },
   });
