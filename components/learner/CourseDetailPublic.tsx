@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Users, Clock, BookOpen, Award, Play, ChevronRight } from "lucide-react";
+import { Users, Clock, BookOpen, Award, Play, ChevronRight, Star } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import toast from "react-hot-toast";
@@ -120,6 +120,35 @@ export default function CourseDetailPublic({ course }: any) {
                 <span className="font-medium">{module.title}</span>
                 <span className="text-muted text-sm">({module.lessons?.length || 0} leçons)</span>
               </div>
+      {/* Avis et Social Proof */}
+      {course.reviews && course.reviews.length > 0 && (
+        <div className="container mx-auto px-6 py-12 border-t border-gray-100">
+          <h2 className="font-serif text-2xl mb-8 flex items-center gap-2">
+            <Star className="w-6 h-6 text-amber-500 fill-amber-500" />
+            Avis des apprenants
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {course.reviews.map((review: any) => (
+              <div key={review.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center font-bold overflow-hidden">
+                      {review.user.imageUrl ? <img src={review.user.imageUrl} className="w-full h-full object-cover" /> : review.user.firstName?.[0]}
+                    </div>
+                    <span className="font-bold">{review.user.firstName}</span>
+                  </div>
+                  <div className="flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={`w-3 h-3 ${i < review.rating ? "text-amber-500 fill-amber-500" : "text-gray-200"}`} />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-muted text-sm italic">"{review.comment}"</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
             </div>
           ))}
         </div>

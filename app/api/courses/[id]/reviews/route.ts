@@ -4,7 +4,7 @@ import { getOrCreateUser } from "@/lib/user-utils";
 
 export async function POST(
   req: Request,
-  { params }: { params: { courseId: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const user = await getOrCreateUser();
@@ -16,7 +16,7 @@ export async function POST(
       where: {
         userId_courseId: {
           userId: user.id,
-          courseId: params.courseId,
+          courseId: params.id,
         },
       },
       update: {
@@ -25,7 +25,7 @@ export async function POST(
       },
       create: {
         userId: user.id,
-        courseId: params.courseId,
+        courseId: params.id,
         rating,
         comment,
       },
