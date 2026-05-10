@@ -16,7 +16,7 @@ import {
   Smartphone,
   ArrowLeft,
   Sparkles,
-  Zap
+  Zap,
   DownloadCloud
 } from "lucide-react";
 import toast from "react-hot-toast";
