@@ -34,7 +34,10 @@ export default function Sidebar() {
         <ul className="space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            // Precise matching for the root dashboard to avoid double highlights
+            const isActive = item.href === "/dashboard"
+              ? pathname === "/dashboard"
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
             
             return (
               <li key={item.href}>

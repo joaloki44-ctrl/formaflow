@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "react-hot-toast";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import "./globals.css";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 
@@ -30,9 +28,7 @@ export default function RootLayout({
     >
       <html lang="fr">
         <body className="font-sans antialiased bg-cream">
-          <Header />
           {children}
-          <Footer />
           <Toaster position="bottom-right" />
           <ServiceWorkerRegistration />
         </body>
