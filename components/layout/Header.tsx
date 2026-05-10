@@ -33,9 +33,9 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">
-          <Link href="#features" className="text-sm font-semibold text-muted hover:text-primary transition-colors">Produit</Link>
-          <Link href="#mission" className="text-sm font-semibold text-muted hover:text-primary transition-colors">Vision</Link>
-          <Link href="#comparison" className="text-sm font-semibold text-muted hover:text-primary transition-colors">Pourquoi nous ?</Link>
+          <Link href="/#features" className="text-sm font-semibold text-muted hover:text-primary transition-colors">Produit</Link>
+          <Link href="/#mission" className="text-sm font-semibold text-muted hover:text-primary transition-colors">Vision</Link>
+          <Link href="/#comparison" className="text-sm font-semibold text-muted hover:text-primary transition-colors">Pourquoi nous ?</Link>
           <Link href="/courses" className="text-sm font-semibold text-muted hover:text-primary transition-colors">Marketplace</Link>
         </nav>
 
@@ -69,9 +69,9 @@ export default function Header() {
       {isMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 py-8 px-6 shadow-xl animate-fade-in">
           <nav className="flex flex-col gap-6">
-            <Link href="#features" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold">Produit</Link>
-            <Link href="#mission" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold">Vision</Link>
-            <Link href="#comparison" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold">Pourquoi nous ?</Link>
+            <Link href="/#features" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold">Produit</Link>
+            <Link href="/#mission" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold">Vision</Link>
+            <Link href="/#comparison" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold">Pourquoi nous ?</Link>
             <Link href="/courses" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold">Marketplace</Link>
             <hr className="border-gray-100" />
             <div className="flex flex-col gap-4">

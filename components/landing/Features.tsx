@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { 
   Layout,
   BarChart3,
@@ -56,15 +57,17 @@ export default function Features() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, i) => (
-            <div key={i} className="p-8 rounded-3xl border border-gray-100 hover:border-secondary/20 hover:shadow-xl hover:shadow-secondary/5 transition-all group">
-              <div className="w-12 h-12 bg-cream rounded-xl flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-all">
-                <feature.icon className="w-6 h-6 transition-colors" />
+            <Link key={i} href="/sign-up">
+              <div className="p-8 h-full rounded-3xl border border-gray-100 hover:border-secondary/20 hover:shadow-xl hover:shadow-secondary/5 transition-all group cursor-pointer">
+                <div className="w-12 h-12 bg-cream rounded-xl flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-all">
+                  <feature.icon className="w-6 h-6 transition-colors" />
+                </div>
+                <h3 className="text-lg font-bold text-primary mb-3">{feature.title}</h3>
+                <p className="text-muted text-sm leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
-              <h3 className="text-lg font-bold text-primary mb-3">{feature.title}</h3>
-              <p className="text-muted text-sm leading-relaxed">
-                {feature.description}
-              </p>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

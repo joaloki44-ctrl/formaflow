@@ -24,7 +24,7 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-primary mb-6 text-sm uppercase tracking-widest">Produit</h4>
             <ul className="space-y-4 text-sm text-muted font-medium">
-              <li><Link href="#features" className="hover:text-primary transition-colors">Fonctionnalités</Link></li>
+              <li><Link href="/#features" className="hover:text-primary transition-colors">Fonctionnalités</Link></li>
               <li><Link href="/courses" className="hover:text-primary transition-colors">Marketplace</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Tarifs</Link></li>
             </ul>
@@ -33,7 +33,7 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-primary mb-6 text-sm uppercase tracking-widest">Entreprise</h4>
             <ul className="space-y-4 text-sm text-muted font-medium">
-              <li><Link href="#mission" className="hover:text-primary transition-colors">À propos</Link></li>
+              <li><Link href="/#mission" className="hover:text-primary transition-colors">À propos</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Blog</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Contact</Link></li>
             </ul>

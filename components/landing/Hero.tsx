@@ -39,7 +39,7 @@ export default function Hero() {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
-                href="#features"
+                href="/#features"
                 className="w-full sm:w-auto px-8 py-4 bg-white border border-gray-200 text-primary rounded-lg font-bold hover:bg-gray-50 transition-all"
               >
                 Voir les fonctionnalités
