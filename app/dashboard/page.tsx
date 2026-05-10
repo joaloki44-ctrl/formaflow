@@ -35,7 +35,7 @@ export default async function DashboardPage() {
       user = await prisma.user.create({
         data: {
           clerkId: userId,
-          email: clerkUser.emailAddresses[0]?.email_address || "",
+          email: clerkUser.emailAddresses[0]?.emailAddress || "",
           firstName: clerkUser.firstName || "",
           lastName: clerkUser.lastName || "",
           imageUrl: clerkUser.imageUrl || "",
