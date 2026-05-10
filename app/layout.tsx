@@ -22,7 +22,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      afterSignInUrl="/dashboard"
+      afterSignUpUrl="/dashboard"
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+    >
       <html lang="fr">
         <body className="font-sans antialiased bg-cream">
           <Header />
