@@ -1,20 +1,12 @@
-import { auth } from "@clerk/nextjs";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import CoursesList from "@/components/dashboard/CoursesList";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { getOrCreateUser } from "@/lib/user-utils";
 
 export default async function DashboardCoursesPage() {
-  const { userId } = auth();
-
-  if (!userId) {
-    redirect("/sign-in");
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { clerkId: userId },
-  });
+  const user = await getOrCreateUser();
 
   if (!user) {
     redirect("/sign-in");
@@ -42,7 +34,7 @@ export default async function DashboardCoursesPage() {
         </div>
         <Link
           href="/dashboard/courses/new"
-          className="btn-primary flex items-center gap-2"
+          className="flex items-center gap-2 bg-secondary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary/90 transition-all shadow-md shadow-secondary/10"
         >
           <Plus className="w-4 h-4" />
           Nouvelle formation
