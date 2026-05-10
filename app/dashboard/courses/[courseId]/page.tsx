@@ -16,76 +16,81 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
     redirect("/sign-in");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { clerkId: userId },
-  });
+  try {
+    const user = await prisma.user.findUnique({
+      where: { clerkId: userId },
+    });
 
-  if (!user) {
-    redirect("/sign-in");
-  }
+    if (!user) {
+      redirect("/sign-in");
+    }
 
-  const course = await prisma.course.findUnique({
-    where: { 
-      id: params.courseId,
-      instructorId: user.id,
-    },
-    include: {
-      modules: {
-        orderBy: { position: "asc" },
-        include: {
-          lessons: {
-            orderBy: { position: "asc" },
+    const course = await prisma.course.findUnique({
+      where: {
+        id: params.courseId,
+        instructorId: user.id,
+      },
+      include: {
+        modules: {
+          orderBy: { position: "asc" },
+          include: {
+            lessons: {
+              orderBy: { position: "asc" },
+            },
           },
         },
+        _count: {
+          select: { enrollments: true },
+        },
       },
-      _count: {
-        select: { enrollments: true },
-      },
-    },
-  });
+    });
 
-  if (!course) {
-    redirect("/dashboard");
-  }
+    if (!course) {
+      redirect("/dashboard");
+    }
 
-  return (
-    <div className="p-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <Link 
-            href="/dashboard"
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div>
-            <h1 className="font-serif text-3xl">{course.title}</h1>
-            <p className="text-muted text-sm mt-1">
-              {course._count.enrollments} inscrits • {course.modules.length} modules
-            </p>
+    return (
+      <div className="p-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Link
+              href="/dashboard"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <div>
+              <h1 className="font-serif text-3xl">{course.title}</h1>
+              <p className="text-muted text-sm mt-1">
+                {course._count.enrollments} inscrits • {course.modules.length} modules
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/dashboard/courses/${course.id}/edit`}
+              className="btn-outline text-sm"
+            >
+              Modifier
+            </Link>
+            <Link
+              href={`/dashboard/courses/${course.id}/modules/new`}
+              className="btn-primary flex items-center gap-2 text-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Ajouter module
+            </Link>
           </div>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <Link 
-            href={`/dashboard/courses/${course.id}/edit`}
-            className="btn-outline text-sm"
-          >
-            Modifier
-          </Link>
-          <Link 
-            href={`/dashboard/courses/${course.id}/modules/new`}
-            className="btn-primary flex items-center gap-2 text-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Ajouter module
-          </Link>
-        </div>
-      </div>
 
-      {/* Course Content */}
-      <CourseDetail course={course} />
-    </div>
-  );
+        {/* Course Content */}
+        <CourseDetail course={course} />
+      </div>
+    );
+  } catch (error) {
+    console.error("Course Detail Page Error:", error);
+    throw error;
+  }
 }
