@@ -1,24 +1,16 @@
-import { auth } from "@clerk/nextjs";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import CourseDetail from "@/components/dashboard/courses/CourseDetail";
 import Link from "next/link";
 import { ArrowLeft, Plus } from "lucide-react";
+import { getOrCreateUser } from "@/lib/user-utils";
 
 interface CourseDetailPageProps {
   params: { courseId: string };
 }
 
 export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
-  const { userId } = auth();
-  
-  if (!userId) {
-    redirect("/sign-in");
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { clerkId: userId },
-  });
+  const user = await getOrCreateUser();
 
   if (!user) {
     redirect("/sign-in");

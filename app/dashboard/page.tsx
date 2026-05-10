@@ -4,19 +4,12 @@ import DashboardStats from "@/components/dashboard/DashboardStats";
 import CoursesList from "@/components/dashboard/CoursesList";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Plus, LayoutDashboard, Sparkles, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
+import { getOrCreateUser } from "@/lib/user-utils";
 
 export default async function DashboardPage() {
-  const { userId } = auth();
+  const user = await getOrCreateUser();
   
-  if (!userId) {
-    return null;
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { clerkId: userId },
-  });
-
   if (!user) {
     redirect("/sign-in");
   }
