@@ -26,22 +26,24 @@ export default async function DashboardCoursesPage() {
   });
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-6 md:p-10 max-w-7xl mx-auto w-full">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
         <div>
-          <h1 className="font-serif text-3xl">Mes Formations</h1>
-          <p className="text-muted mt-1">Gérez vos contenus pédagogiques</p>
+          <h1 className="text-3xl font-bold text-primary tracking-tight">Mes Formations</h1>
+          <p className="text-muted mt-1 font-medium text-sm">Gérez et optimisez vos contenus pédagogiques</p>
         </div>
         <Link
           href="/dashboard/courses/new"
-          className="flex items-center gap-2 bg-secondary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary/90 transition-all shadow-md shadow-secondary/10"
+          className="flex items-center gap-2 bg-secondary text-white px-6 py-3 rounded-xl font-bold hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/10"
         >
           <Plus className="w-4 h-4" />
           Nouvelle formation
         </Link>
       </div>
 
-      <CoursesList courses={courses} />
+      <div className="bg-white rounded-[2.5rem] border border-gray-50 p-2 shadow-sm">
+        <CoursesList courses={courses} />
+      </div>
     </div>
   );
 }

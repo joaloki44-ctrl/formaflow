@@ -15,7 +15,6 @@ export default async function DashboardLayout({
     redirect("/sign-in");
   }
 
-  // Ensure user exists in Prisma before rendering any dashboard page
   const user = await getOrCreateUser();
 
   if (!user) {
@@ -23,10 +22,10 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-[#faf9f6]">
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#faf9f6]">
       <MobileNav />
       <Sidebar />
-      <main className="flex-1 overflow-y-auto pt-16 md:pt-0">
+      <main className="flex-1 w-full overflow-y-auto pt-16 md:pt-0">
         {children}
       </main>
     </div>
