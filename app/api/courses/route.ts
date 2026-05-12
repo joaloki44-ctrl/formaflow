@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     const user = await getOrCreateUser();
     if (!user) return new NextResponse("Non autorisé", { status: 401 });
 
-    const { title, description, category, price, level } = await req.json();
+    const { title, description, category, price, level, imageUrl } = await req.json();
 
     const course = await prisma.course.create({
       data: {
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
         description: description || "",
         category,
         price: parseFloat(price) || 0,
-        level: level || "BEGINNER",
+        level: level || "BEGINNER", imageUrl,
         instructorId: user.id,
       },
     });

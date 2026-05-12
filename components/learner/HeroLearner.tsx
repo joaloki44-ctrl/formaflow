@@ -3,7 +3,11 @@
 import { motion } from "framer-motion";
 import { Search, Sparkles } from "lucide-react";
 
-export default function HeroLearner() {
+interface HeroLearnerProps {
+  courseCount: number;
+}
+
+export default function HeroLearner({ courseCount }: HeroLearnerProps) {
   return (
     <section className="relative bg-dark pt-32 pb-20 overflow-hidden">
       <div className="absolute inset-0">
@@ -19,7 +23,7 @@ export default function HeroLearner() {
         >
           <div className="inline-flex items-center gap-2 bg-white/10 text-white/90 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-white/10">
             <Sparkles className="w-4 h-4 text-[#ff6b4a]" />
-            Plus de 1,500 formations disponibles
+            Plus de {courseCount} formations disponibles
           </div>
 
           <h1 className="font-serif text-4xl md:text-6xl text-white leading-tight mb-6">
