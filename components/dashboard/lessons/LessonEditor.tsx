@@ -1,23 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
 import { 
+  Plus,
+  Trash2,
+  GripVertical,
   Type, 
-  Image as ImageIcon, 
-  Video, 
   Heading1, 
   Heading2, 
+  Image as ImageIcon,
+  Video,
   List,
   Quote,
   Code,
-  Plus,
-  GripVertical,
-  Trash2
+  Upload,
+  FileText,
+  X,
+  Paperclip
 } from "lucide-react";
 
-// Types de blocs supportés
-type BlockType = "text" | "heading" | "heading2" | "image" | "video" | "list" | "quote" | "code";
+type BlockType = "text" | "heading" | "heading2" | "image" | "video" | "list" | "quote" | "code" | "file";
 
 interface Block {
   id: string;
@@ -27,35 +29,39 @@ interface Block {
     url?: string;
     alt?: string;
     language?: string;
+    fileName?: string;
+    fileSize?: string;
   };
 }
 
 interface LessonEditorProps {
-  type: string;
+  type: "TEXT" | "VIDEO" | "QUIZ";
   content: string;
   onChange: (content: string) => void;
 }
 
-const blockIcons: Record<BlockType, typeof Type> = {
-  text: Type,
+const blockIcons: Record<BlockType, any> = {
   heading: Heading1,
   heading2: Heading2,
+  text: Type,
   image: ImageIcon,
   video: Video,
   list: List,
   quote: Quote,
   code: Code,
+  file: Paperclip,
 };
 
 const blockLabels: Record<BlockType, string> = {
-  text: "Texte",
-  heading: "Titre",
-  heading2: "Sous-titre",
+  heading: "Titre 1",
+  heading2: "Titre 2",
+  text: "Paragraphe",
   image: "Image",
   video: "Vidéo",
   list: "Liste",
   quote: "Citation",
   code: "Code",
+  file: "Fichier joint",
 };
 
 export default function LessonEditor({ type, content, onChange }: LessonEditorProps) {
@@ -70,7 +76,9 @@ export default function LessonEditor({ type, content, onChange }: LessonEditorPr
       type: blockType,
       content: "",
     };
-    setBlocks([...blocks, newBlock]);
+    const updated = [...blocks, newBlock];
+    setBlocks(updated);
+    onChange(JSON.stringify(updated));
     setShowAddMenu(false);
   };
 
@@ -98,13 +106,7 @@ export default function LessonEditor({ type, content, onChange }: LessonEditorPr
 
   const moveBlock = (id: string, direction: "up" | "down") => {
     const index = blocks.findIndex((b) => b.id === id);
-    if (
-      (direction === "up" && index === 0) ||
-      (direction === "down" && index === blocks.length - 1)
-    ) {
-      return;
-    }
-
+    if ((direction === "up" && index === 0) || (direction === "down" && index === blocks.length - 1)) return;
     const newBlocks = [...blocks];
     const newIndex = direction === "up" ? index - 1 : index + 1;
     [newBlocks[index], newBlocks[newIndex]] = [newBlocks[newIndex], newBlocks[index]];
@@ -112,220 +114,96 @@ export default function LessonEditor({ type, content, onChange }: LessonEditorPr
     onChange(JSON.stringify(newBlocks));
   };
 
-  // Rendu spécifique selon le type de bloc
   const renderBlockInput = (block: Block) => {
     switch (block.type) {
-      case "heading":
-        return (
-          <input
-            type="text"
-            value={block.content}
-            onChange={(e) => updateBlock(block.id, e.target.value)}
-            placeholder="Titre principal..."
-            className="w-full text-2xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 placeholder:text-gray-300"
-          />
-        );
-
-      case "heading2":
-        return (
-          <input
-            type="text"
-            value={block.content}
-            onChange={(e) => updateBlock(block.id, e.target.value)}
-            placeholder="Sous-titre..."
-            className="w-full text-xl font-semibold bg-transparent border-none focus:outline-none focus:ring-0 placeholder:text-gray-300"
-          />
-        );
-
       case "text":
-        return (
-          <textarea
-            value={block.content}
-            onChange={(e) => updateBlock(block.id, e.target.value)}
-            placeholder="Écrivez votre contenu ici..."
-            rows={4}
-            className="w-full resize-none bg-transparent border-none focus:outline-none focus:ring-0 placeholder:text-gray-300 leading-relaxed"
-          />
-        );
-
-      case "image":
-        return (
-          <div className="space-y-3">
-            <input
-              type="text"
-              value={block.metadata?.url || ""}
-              onChange={(e) => updateBlockMetadata(block.id, { url: e.target.value })}
-              placeholder="URL de l'image..."
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
-            />
-            {block.metadata?.url && (
-              <img
-                src={block.metadata.url}
-                alt={block.metadata?.alt || ""}
-                className="max-h-64 rounded-lg object-cover"
-              />
-            )}
-            <input
-              type="text"
-              value={block.metadata?.alt || ""}
-              onChange={(e) => updateBlockMetadata(block.id, { alt: e.target.value })}
-              placeholder="Texte alternatif..."
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
-            />
-          </div>
-        );
-
+        return <textarea value={block.content} onChange={(e) => updateBlock(block.id, e.target.value)} placeholder="Écrivez ici..." rows={4} className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-800 placeholder:text-gray-300 leading-relaxed" />;
+      case "heading":
+        return <input type="text" value={block.content} onChange={(e) => updateBlock(block.id, e.target.value)} placeholder="Titre 1" className="w-full text-2xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 text-gray-900 placeholder:text-gray-200" />;
       case "video":
         return (
-          <div className="space-y-3">
-            <input
-              type="text"
-              value={block.content}
-              onChange={(e) => updateBlock(block.id, e.target.value)}
-              placeholder="URL YouTube, Vimeo ou lien vidéo..."
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
-            />
-            {block.content && (
-              <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-                <Video className="w-12 h-12 text-gray-400" />
+          <div className="space-y-4">
+            <div className="p-8 border-2 border-dashed border-gray-100 rounded-2xl flex flex-col items-center justify-center bg-gray-50/50 group-hover:bg-white transition-colors">
+              <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-4">
+                <Upload className="w-6 h-6 text-secondary" />
               </div>
-            )}
+              <p className="text-sm font-bold text-gray-900 mb-1">Télécharger une vidéo</p>
+              <p className="text-xs text-gray-500 mb-4">MP4, WebM ou Ogg (max 500Mo)</p>
+              <input type="file" className="hidden" id={`video-upload-${block.id}`} accept="video/*" />
+              <label htmlFor={`video-upload-${block.id}`} className="px-6 py-2 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg cursor-pointer hover:bg-gray-800 transition-all">Sélectionner un fichier</label>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
+              <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-gray-400 font-bold">ou via lien</span></div>
+            </div>
+            <input type="text" value={block.content} onChange={(e) => updateBlock(block.id, e.target.value)} placeholder="Lien YouTube, Vimeo, S3..." className="w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-secondary/20 focus:outline-none" />
           </div>
         );
-
-      case "list":
+      case "file":
         return (
-          <textarea
-            value={block.content}
-            onChange={(e) => updateBlock(block.id, e.target.value)}
-            placeholder="Élément 1&#10;Élément 2&#10;Élément 3"
-            rows={4}
-            className="w-full resize-none bg-transparent border-none focus:outline-none focus:ring-0 placeholder:text-gray-300"
-          />
-        );
-
-      case "quote":
-        return (
-          <textarea
-            value={block.content}
-            onChange={(e) => updateBlock(block.id, e.target.value)}
-            placeholder="Citation..."
-            rows={2}
-            className="w-full resize-none bg-transparent border-none focus:outline-none focus:ring-0 placeholder:text-gray-300 italic"
-          />
-        );
-
-      case "code":
-        return (
-          <div className="space-y-2">
-            <input
-              type="text"
-              value={block.metadata?.language || ""}
-              onChange={(e) => updateBlockMetadata(block.id, { language: e.target.value })}
-              placeholder="Langage (js, python, html...)"
-              className="w-full px-3 py-1 border border-gray-200 rounded text-xs"
-            />
-            <textarea
-              value={block.content}
-              onChange={(e) => updateBlock(block.id, e.target.value)}
-              placeholder="// Code..."
-              rows={6}
-              className="w-full resize-none bg-gray-900 text-gray-100 font-mono text-sm p-4 rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-[#ff6b4a]/50"
-            />
+          <div className="p-6 bg-gray-50/50 rounded-2xl border border-gray-100 flex items-center justify-between group">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center">
+                <FileText className="w-5 h-5 text-gray-400" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-gray-900">{block.metadata?.fileName || "Aucun fichier sélectionné"}</p>
+                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{block.metadata?.fileSize || "PDF, ZIP, DOCX..."}</p>
+              </div>
+            </div>
+            <input type="file" className="hidden" id={`file-upload-${block.id}`} />
+            <label htmlFor={`file-upload-${block.id}`} className="px-4 py-2 bg-white border border-gray-200 text-gray-900 text-[10px] font-black uppercase tracking-widest rounded-lg cursor-pointer hover:bg-gray-50 transition-all">Ajouter</label>
           </div>
         );
-
       default:
-        return null;
+        return <textarea value={block.content} onChange={(e) => updateBlock(block.id, e.target.value)} placeholder="Écrivez ici..." rows={3} className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-800" />;
     }
   };
 
   return (
-    <div className="space-y-4">
-      {/* Liste des blocs */}
+    <div className="space-y-6">
       {blocks.map((block, index) => {
         const Icon = blockIcons[block.type];
         return (
-          <div
-            key={block.id}
-            className="group bg-white border border-gray-200 rounded-xl p-4 hover:border-[#ff6b4a]/30 transition-colors"
-          >
+          <div key={block.id} className="group bg-white border border-gray-100 rounded-[2rem] p-6 hover:border-secondary/20 hover:shadow-xl hover:shadow-secondary/5 transition-all relative">
             <div className="flex items-start gap-4">
-              {/* Drag handle */}
-              <div className="flex flex-col items-center gap-1 pt-1">
-                <button
-                  onClick={() => moveBlock(block.id, "up")}
-                  disabled={index === 0}
-                  className="opacity-0 group-hover:opacity-100 disabled:opacity-0 p-1 hover:bg-gray-100 rounded transition-all"
-                >
-                  ↑
-                </button>
-                <GripVertical className="w-5 h-5 text-gray-400 cursor-grab" />
-                <button
-                  onClick={() => moveBlock(block.id, "down")}
-                  disabled={index === blocks.length - 1}
-                  className="opacity-0 group-hover:opacity-100 disabled:opacity-0 p-1 hover:bg-gray-100 rounded transition-all"
-                >
-                  ↓
-                </button>
+              <div className="flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => moveBlock(block.id, "up")} disabled={index === 0} className="p-1 hover:bg-gray-50 rounded">↑</button>
+                <GripVertical className="w-4 h-4 text-gray-300" />
+                <button onClick={() => moveBlock(block.id, "down")} disabled={index === blocks.length - 1} className="p-1 hover:bg-gray-50 rounded">↓</button>
               </div>
-
-              {/* Content */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2">
-                  <Icon className="w-4 h-4 text-gray-400" />
-                  <span className="text-xs text-gray-400 font-medium">
-                    {blockLabels[block.type]}
-                  </span>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="p-1.5 bg-gray-50 rounded-lg text-gray-400"><Icon className="w-3.5 h-3.5" /></div>
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em]">{blockLabels[block.type]}</span>
                 </div>
                 {renderBlockInput(block)}
               </div>
-
-              {/* Delete */}
-              <button
-                onClick={() => removeBlock(block.id)}
-                className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-lg transition-all"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <button onClick={() => removeBlock(block.id)} className="opacity-0 group-hover:opacity-100 p-2 text-gray-300 hover:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
             </div>
           </div>
         );
       })}
-
-      {/* Add block button */}
       <div className="relative">
         {showAddMenu ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-lg">
-            <div className="grid grid-cols-4 gap-2">
+          <div className="bg-white border border-gray-100 rounded-[2rem] p-8 shadow-2xl animate-fade-in">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
               {(Object.keys(blockIcons) as BlockType[]).map((type) => {
                 const Icon = blockIcons[type];
                 return (
-                  <button
-                    key={type}
-                    onClick={() => addBlock(type)}
-                    className="flex flex-col items-center gap-2 p-3 hover:bg-gray-50 rounded-lg transition-colors"
-                  >
-                    <Icon className="w-5 h-5 text-gray-600" />
-                    <span className="text-xs text-gray-600">{blockLabels[type]}</span>
+                  <button key={type} onClick={() => addBlock(type)} className="flex flex-col items-center gap-3 p-4 hover:bg-secondary/5 rounded-2xl transition-all group">
+                    <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:text-secondary group-hover:shadow-md transition-all"><Icon className="w-6 h-6" /></div>
+                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{blockLabels[type]}</span>
                   </button>
                 );
               })}
             </div>
-            <button
-              onClick={() => setShowAddMenu(false)}
-              className="w-full mt-3 text-sm text-gray-400 hover:text-gray-600"
-            >
-              Annuler
-            </button>
+            <button onClick={() => setShowAddMenu(false)} className="w-full mt-6 text-xs font-bold text-gray-400 hover:text-gray-900 transition-colors">Fermer</button>
           </div>
         ) : (
-          <button
-            onClick={() => setShowAddMenu(true)}
-            className="w-full py-4 border-2 border-dashed border-gray-300 rounded-xl text-gray-400 hover:border-[#ff6b4a] hover:text-[#ff6b4a] transition-colors flex items-center justify-center gap-2"
-          >
-            <Plus className="w-5 h-5" />
-            Ajouter un bloc
+          <button onClick={() => setShowAddMenu(true)} className="w-full py-8 border-2 border-dashed border-gray-100 rounded-[2.5rem] text-gray-400 hover:border-secondary/30 hover:text-secondary hover:bg-secondary/5 transition-all flex flex-col items-center justify-center gap-3 group">
+            <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-white group-hover:shadow-md transition-all"><Plus className="w-6 h-6" /></div>
+            <span className="text-xs font-black uppercase tracking-[0.2em]">Ajouter un élément au cours</span>
           </button>
         )}
       </div>

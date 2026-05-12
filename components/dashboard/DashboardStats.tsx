@@ -1,7 +1,4 @@
-"use client";
-
-import { BookOpen, Users, Euro, TrendingUp, Sparkles, Activity } from "lucide-react";
-import { motion } from "framer-motion";
+import { BookOpen, Users, Euro, TrendingUp } from "lucide-react";
 
 interface DashboardStatsProps {
   totalCourses: number;
@@ -11,68 +8,32 @@ interface DashboardStatsProps {
 
 export default function DashboardStats({ totalCourses, totalStudents, totalRevenue }: DashboardStatsProps) {
   const stats = [
-    {
-      label: "Formations",
-      value: totalCourses,
-      icon: BookOpen,
-      trend: "+12%",
-      color: "text-blue-400",
-      bg: "bg-blue-500/10"
-    },
-    {
-      label: "Apprenants",
-      value: totalStudents,
-      icon: Users,
-      trend: "Peak",
-      color: "text-secondary",
-      bg: "bg-secondary/10"
-    },
-    {
-      label: "Revenus",
-      value: `${totalRevenue.toFixed(0)}€`,
-      icon: Euro,
-      trend: "+8.4%",
-      color: "text-emerald-400",
-      bg: "bg-emerald-500/10"
-    },
-    {
-      label: "Performance",
-      value: "98.2%",
-      icon: Activity,
-      trend: "Optimal",
-      color: "text-amber-400",
-      bg: "bg-amber-500/10"
-    },
+    { label: "Formations", value: totalCourses, icon: BookOpen, color: "text-blue-600 bg-blue-50" },
+    { label: "Apprenants", value: totalStudents, icon: Users, color: "text-secondary bg-secondary/5" },
+    { label: "Revenus", value: `${totalRevenue.toFixed(2)}€`, icon: Euro, color: "text-emerald-600 bg-emerald-50" },
+    { label: "Growth", value: "+12%", icon: TrendingUp, color: "text-amber-600 bg-amber-50" },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {stats.map((stat, i) => {
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {stats.map((stat) => {
         const Icon = stat.icon;
         return (
-          <motion.div
+          <div
             key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="bento-card p-8 bg-white/[0.02] border-white/5 hover:bg-white/[0.04] group"
+            className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden"
           >
-            <div className="flex items-center justify-between mb-8">
-              <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color} transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-2xl`}>
+            <div className="flex items-center gap-5 mb-6 relative z-10">
+              <div className={`p-4 rounded-2xl ${stat.color} transition-transform group-hover:scale-110 shadow-sm`}>
                 <Icon className="w-6 h-6" />
               </div>
-              <div className="flex flex-col items-end">
-                <span className="text-[10px] font-black text-secondary uppercase tracking-[0.2em]">{stat.trend}</span>
-                <div className="w-8 h-1 bg-secondary/20 rounded-full mt-1 overflow-hidden">
-                  <div className="h-full bg-secondary w-2/3" />
-                </div>
-              </div>
+              <p className="text-[11px] font-black text-gray-500 uppercase tracking-[0.2em]">{stat.label}</p>
             </div>
-            <div>
-              <p className="text-4xl font-black text-white tracking-tighter mb-2">{stat.value}</p>
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">{stat.label}</p>
-            </div>
-          </motion.div>
+            {/* Using text-gray-900 to ensure visibility against white background */}
+            <p className="text-3xl font-black text-gray-900 tracking-tight relative z-10">{stat.value}</p>
+
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gray-50/50 rounded-full translate-x-1/2 -translate-y-1/2 group-hover:bg-secondary/5 transition-colors" />
+          </div>
         );
       })}
     </div>

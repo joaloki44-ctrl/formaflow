@@ -10,9 +10,9 @@ export default authMiddleware({
     "/api/webhook/clerk",
     "/api/webhook/stripe",
     "/courses",
-    "/courses/(.*)", // Matches all course detail pages
+    "/courses/(.*)", // Toutes les pages de détails de cours
   ],
-  // Routes ignorées par Clerk (ex: webhooks)
+  // Routes ignorées par Clerk
   ignoredRoutes: [
     "/api/webhook/clerk",
     "/api/webhook/stripe",
