@@ -14,16 +14,17 @@ interface NewLessonPageProps {
   };
 }
 
+type LessonType = "TEXT" | "VIDEO" | "QUIZ";
+
 export default function NewLessonPage({ params }: NewLessonPageProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
-  type LessonType = "TEXT" | "VIDEO" | "QUIZ";
   const [lessonData, setLessonData] = useState<{
     title: string;
     type: LessonType;
     content: string;
-  }>(
+  }>({
     title: "",
     type: "TEXT",
     content: "",
