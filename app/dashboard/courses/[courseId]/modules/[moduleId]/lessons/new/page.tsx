@@ -18,7 +18,12 @@ export default function NewLessonPage({ params }: NewLessonPageProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
-  const [lessonData, setLessonData] = useState({
+  type LessonType = "TEXT" | "VIDEO" | "QUIZ";
+  const [lessonData, setLessonData] = useState<{
+    title: string;
+    type: LessonType;
+    content: string;
+  }>(
     title: "",
     type: "TEXT",
     content: "",
@@ -97,7 +102,7 @@ export default function NewLessonPage({ params }: NewLessonPageProps) {
               return (
                 <button
                   key={type.id}
-                  onClick={() => setLessonData({ ...lessonData, type: type.id })}
+                  onClick={() => setLessonData({ ...lessonData, type: type.id as LessonType })}
                   className={`p-6 rounded-2xl border-2 transition-all text-left ${
                     lessonData.type === type.id
                       ? "border-[#ff6b4a] bg-[#ff6b4a]/5"
