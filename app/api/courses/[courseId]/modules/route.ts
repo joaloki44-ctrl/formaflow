@@ -2,6 +2,27 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getOrCreateUser } from "@/lib/user-utils";
 
+export async function GET(
+  req: Request,
+  { params }: { params: { courseId: string } }
+) {
+  try {
+    const user = await getOrCreateUser();
+    if (!user) return new NextResponse("Non autorisé", { status: 401 });
+
+    const modules = await prisma.module.findMany({
+      where: { courseId: params.courseId },
+      orderBy: { position: "asc" },
+      include: { lessons: { orderBy: { position: "asc" } } }
+    });
+
+    return NextResponse.json(modules);
+  } catch (error) {
+    console.error("[MODULES_GET]", error);
+    return new NextResponse("Erreur interne", { status: 500 });
+  }
+}
+
 export async function POST(
   req: Request,
   { params }: { params: { courseId: string } }

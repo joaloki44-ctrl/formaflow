@@ -10,7 +10,7 @@ export async function POST(
     const user = await getOrCreateUser();
     if (!user) return new NextResponse("Non autorisé", { status: 401 });
 
-    const { title } = await req.json();
+    const values = await req.json();
 
     const lastLesson = await prisma.lesson.findFirst({
       where: { moduleId: params.moduleId },
@@ -21,7 +21,7 @@ export async function POST(
 
     const lesson = await prisma.lesson.create({
       data: {
-        title,
+        ...values,
         position: newPosition,
         moduleId: params.moduleId,
       },
