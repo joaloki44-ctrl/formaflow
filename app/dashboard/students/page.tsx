@@ -3,17 +3,29 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { getOrCreateUser } from "@/lib/user-utils";
 import { Search, Mail, BookOpen, Clock, MoreHorizontal, User as UserIcon, ExternalLink } from "lucide-react";
-import Image from "next/image";
+import StudentSearch from "@/components/dashboard/students/StudentSearch";
 
-export default async function StudentsPage() {
+export default async function StudentsPage({
+  searchParams
+}: {
+  searchParams: { q?: string }
+}) {
   const user = await getOrCreateUser();
   if (!user) redirect("/sign-in");
+
+  const query = searchParams.q || "";
 
   const enrollments = await prisma.enrollment.findMany({
     where: {
       course: {
         instructorId: user.id,
       },
+      OR: [
+        { user: { firstName: { contains: query, mode: 'insensitive' } } },
+        { user: { lastName: { contains: query, mode: 'insensitive' } } },
+        { user: { email: { contains: query, mode: 'insensitive' } } },
+        { course: { title: { contains: query, mode: 'insensitive' } } },
+      ]
     },
     include: {
       user: true,
@@ -35,14 +47,7 @@ export default async function StudentsPage() {
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Gestion des Apprenants</h1>
           <p className="text-gray-500 mt-1 font-medium text-sm">Suivez la progression et communiquez avec vos élèves en temps réel.</p>
         </div>
-        <div className="relative w-full md:w-80">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Rechercher par nom ou email..."
-            className="pl-12 pr-4 py-3 border border-gray-100 rounded-2xl bg-white focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all w-full shadow-sm text-sm"
-          />
-        </div>
+        <StudentSearch defaultValue={query} />
       </div>
 
       <div className="grid grid-cols-1 gap-6">
@@ -51,9 +56,11 @@ export default async function StudentsPage() {
             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
               <UserIcon className="w-10 h-10 text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Votre classe est encore vide</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-3">
+              {query ? "Aucun résultat trouvé" : "Votre classe est encore vide"}
+            </h3>
             <p className="text-gray-400 max-w-xs mx-auto text-sm font-medium leading-relaxed">
-              Une fois que vos élèves seront inscrits, vous pourrez suivre leur progression détaillée ici.
+              {query ? `Aucun élève ne correspond à "${query}".` : "Une fois que vos élèves seront inscrits, vous pourrez suivre leur progression détaillée ici."}
             </p>
           </div>
         ) : (
@@ -98,7 +105,7 @@ export default async function StudentsPage() {
                       <td className="px-8 py-6">
                         <div className="w-full max-w-[140px]">
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-[9px] font-black text-secondary tracking-widest uppercase">{enrollment.totalProgress}%</span>
+                            <span className="text-[9px] font-black text-secondary tracking-widest uppercase">{Math.round(enrollment.totalProgress)}%</span>
                             {enrollment.status === 'COMPLETED' && <span className="text-[8px] px-1.5 py-0.5 bg-emerald-500 text-white rounded font-black uppercase">Terminé</span>}
                           </div>
                           <div className="h-1.5 w-full bg-gray-50 rounded-full overflow-hidden border border-gray-100">

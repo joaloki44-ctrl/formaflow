@@ -2,12 +2,32 @@
 
 import { motion } from "framer-motion";
 import { Search, Sparkles } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface HeroLearnerProps {
   courseCount: number;
+  initialQuery: string;
+  initialCategory: string;
 }
 
-export default function HeroLearner({ courseCount }: HeroLearnerProps) {
+export default function HeroLearner({ courseCount, initialQuery, initialCategory }: HeroLearnerProps) {
+  const router = useRouter();
+  const [value, setValue] = useState(initialQuery);
+  const [category, setCategory] = useState(initialCategory);
+  const debouncedValue = useDebounce(value, 500);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (debouncedValue) params.set("q", debouncedValue);
+    if (category && category !== "Tous") params.set("category", category);
+
+    router.push(`/courses?${params.toString()}`);
+  }, [debouncedValue, category, router]);
+
+  const categories = ["Tous", "Technologie", "Business", "Design", "Marketing"];
+
   return (
     <section className="relative bg-dark pt-32 pb-20 overflow-hidden">
       <div className="absolute inset-0">
@@ -38,17 +58,20 @@ export default function HeroLearner({ courseCount }: HeroLearnerProps) {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
               placeholder="Rechercher une formation..."
               className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-full text-white placeholder:text-gray-500 focus:outline-none focus:border-[#ff6b4a]/50"
             />
           </div>
 
           <div className="flex flex-wrap justify-center gap-3 mt-8">
-            {["Tous", "Technologie", "Business", "Design", "Marketing"].map((cat, i) => (
+            {categories.map((cat) => (
               <button
                 key={cat}
+                onClick={() => setCategory(cat)}
                 className={`px-4 py-2 rounded-full text-sm transition-all ${
-                  i === 0 ? "bg-white text-dark font-medium" : "bg-white/5 text-white/70 border border-white/10"
+                  category === cat ? "bg-white text-dark font-medium" : "bg-white/5 text-white/70 border border-white/10"
                 }`}
               >
                 {cat}
