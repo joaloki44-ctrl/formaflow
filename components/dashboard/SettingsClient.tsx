@@ -31,6 +31,7 @@ export default function SettingsClient({ user }: SettingsClientProps) {
     lastName: user.lastName || "",
     notificationsEnabled: user.notificationsEnabled ?? true,
     weeklyReportsEnabled: user.weeklyReportsEnabled ?? true,
+    marketingEmails: user.marketingEmails ?? false,
     theme: user.theme || "light"
   });
 
@@ -45,17 +46,25 @@ export default function SettingsClient({ user }: SettingsClientProps) {
 
       if (!response.ok) throw new Error("Erreur de mise à jour");
 
-      toast.success("Préférences enregistrées avec succès !");
+      toast.success("Paramètres mis à jour avec succès !");
     } catch (error) {
-      toast.error("Erreur lors de la synchronisation");
+      toast.error("Erreur lors de la sauvegarde");
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleStripeConnect = () => {
+    toast.loading("Redirection vers Stripe...");
+    // Simulate real connect redirect
+    setTimeout(() => {
+      window.location.assign("https://dashboard.stripe.com/test/onboarding");
+    }, 1500);
+  };
+
   const tabs = [
     { id: 'profile', label: 'Profil Public', icon: UserIcon },
-    { id: 'billing', label: 'Facturation & Revenus', icon: CreditCard },
+    { id: 'billing', label: 'Facturation & Paiements', icon: CreditCard },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'security', label: 'Sécurité', icon: Shield },
     { id: 'appearance', label: 'Apparence', icon: Palette },
@@ -138,8 +147,11 @@ export default function SettingsClient({ user }: SettingsClientProps) {
                       Recevez vos virements en 24h. Gérez vos remboursements et vos factures élèves directement via l'infrastructure sécurisée Stripe.
                     </p>
                   </div>
-                  <button className="flex items-center gap-3 px-8 py-4 bg-white text-emerald-700 text-xs font-black uppercase tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl whitespace-nowrap">
-                    Accéder au Dashboard Stripe
+                  <button
+                    onClick={handleStripeConnect}
+                    className="flex items-center gap-3 px-8 py-4 bg-white text-emerald-700 text-xs font-black uppercase tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl whitespace-nowrap"
+                  >
+                    Lancer la connexion Stripe
                     <ExternalLink className="w-4 h-4" />
                   </button>
                 </div>
@@ -202,7 +214,7 @@ export default function SettingsClient({ user }: SettingsClientProps) {
                 </div>
               ))}
               <div className="pt-10 flex justify-end">
-                 <button onClick={onSave} className="px-8 py-3 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-gray-800 transition-all">Enregistrer les alertes</button>
+                 <button onClick={onSave} className="px-10 py-4 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-gray-800 transition-all shadow-xl">Enregistrer les préférences</button>
               </div>
             </div>
           </div>
@@ -232,8 +244,11 @@ export default function SettingsClient({ user }: SettingsClientProps) {
                   <span className="inline-flex items-center gap-2 text-emerald-600 font-bold text-sm"><CheckCircle2 className="w-4 h-4" /> Maximal</span>
                </div>
             </div>
-            <button className="flex items-center gap-3 px-10 py-5 bg-gray-900 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-[1.5rem] hover:bg-gray-800 transition-all shadow-xl shadow-gray-900/20">
-              Paramètres d'accès Clerk
+            <button
+               onClick={() => window.open('https://clerk.com/user', '_blank')}
+               className="flex items-center gap-3 px-10 py-5 bg-gray-900 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-[1.5rem] hover:bg-gray-800 transition-all shadow-xl shadow-gray-900/20"
+            >
+              Gérer mon profil de sécurité
               <ExternalLink className="w-4 h-4 text-secondary" />
             </button>
           </div>
@@ -242,7 +257,7 @@ export default function SettingsClient({ user }: SettingsClientProps) {
         return (
           <div className="bg-white rounded-[3rem] border border-gray-100 p-10 shadow-sm animate-fade-in">
             <h3 className="text-xl font-bold text-gray-900 mb-10 tracking-tight">Expérience Visuelle</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div className="grid grid-cols-2 gap-8">
               {[
                 { id: 'light', label: 'FormaFlow Clair', desc: 'Minimalisme & Sérénité', icon: Sun },
                 { id: 'dark', label: 'Mode Cinématique', desc: 'Elite Dark Interface', icon: Moon },
@@ -251,7 +266,10 @@ export default function SettingsClient({ user }: SettingsClientProps) {
                 return (
                   <button
                     key={theme.id}
-                    onClick={() => setFormData({ ...formData, theme: theme.id })}
+                    onClick={() => {
+                      setFormData({ ...formData, theme: theme.id });
+                      toast.success(`Mode ${theme.label} sélectionné`);
+                    }}
                     className={`p-10 rounded-[3rem] border-2 transition-all flex flex-col items-center text-center gap-6 group/th ${
                       active
                         ? "border-secondary bg-secondary/5 text-secondary shadow-xl shadow-secondary/5"
@@ -279,7 +297,7 @@ export default function SettingsClient({ user }: SettingsClientProps) {
                 </p>
             </div>
             <div className="mt-10 flex justify-end">
-               <button onClick={onSave} className="px-10 py-4 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-primary/10">Appliquer le thème</button>
+               <button onClick={onSave} className="px-10 py-4 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-primary/10">Appliquer et enregistrer</button>
             </div>
           </div>
         );
