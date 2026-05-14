@@ -18,7 +18,6 @@ export async function PATCH(req: Request) {
         lastName: body.lastName,
         notificationsEnabled: body.notificationsEnabled,
         weeklyReportsEnabled: body.weeklyReportsEnabled,
-        marketingEmails: body.marketingEmails,
         theme: body.theme,
       },
     });
