@@ -36,7 +36,7 @@ export default function CourseDetailPublic({ course }: any) {
           window.location.assign(data.url);
         } else {
           toast.success("Inscription réussie !");
-          router.push(`/courses/${course.id}/learn`);
+          router.push(\`/courses/\${course.id}/learn\`);
         }
       } else {
         toast.error(data || "Une erreur est survenue");
@@ -61,11 +61,11 @@ export default function CourseDetailPublic({ course }: any) {
                 transition={{ duration: 0.6 }}
               >
                 <div className="flex items-center gap-3 mb-8">
-                  <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                  <span className={\`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest \${
                     course.level === 'BEGINNER' ? 'bg-emerald-500/20 text-emerald-400' :
                     course.level === 'INTERMEDIATE' ? 'bg-amber-500/20 text-amber-400' :
                     'bg-rose-500/20 text-rose-400'
-                  }`}>
+                  }\`}>
                     {course.level === 'BEGINNER' ? 'Débutant' : course.level === 'INTERMEDIATE' ? 'Intermédiaire' : 'Avancé'}
                   </span>
                   <span className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-gray-400">
@@ -127,7 +127,7 @@ export default function CourseDetailPublic({ course }: any) {
 
               <div className="flex items-end gap-2 mb-8">
                 <span className="text-5xl font-black text-gray-900 tracking-tighter">
-                  {course.price === 0 ? 'Gratuit' : `${course.price}€`}
+                  {course.price === 0 ? 'Gratuit' : \`\${course.price}€\`}
                 </span>
                 {course.price > 0 && <span className="text-gray-400 font-bold mb-2 line-through">149€</span>}
               </div>
