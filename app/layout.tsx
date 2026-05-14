@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
-import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 
 export const metadata: Metadata = {
   title: "FormaFlow - Créez votre formation en 1h",
@@ -30,7 +29,6 @@ export default function RootLayout({
         <body className="font-sans antialiased bg-cream">
           {children}
           <Toaster position="bottom-right" />
-          <ServiceWorkerRegistration />
         </body>
       </html>
     </ClerkProvider>
