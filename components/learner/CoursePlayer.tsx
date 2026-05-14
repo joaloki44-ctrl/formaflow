@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { 
+import Link from "next/link";
   Play,
   CheckCircle2,
   ChevronLeft,
