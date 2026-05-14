@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Upload, ImageIcon, X, Loader2, Video, Film } from "lucide-react";
+import { CheckCircle2,  Upload, ImageIcon, X, Loader2, Video, Film } from "lucide-react";
 
 export default function CourseForm() {
   const router = useRouter();
