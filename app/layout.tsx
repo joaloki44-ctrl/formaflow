@@ -19,18 +19,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      afterSignInUrl="/dashboard"
-      afterSignUpUrl="/dashboard"
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-    >
-      <html lang="fr">
-        <body className="font-sans antialiased bg-cream">
+    <html lang="fr">
+      <body className="font-sans antialiased bg-cream">
+        <ClerkProvider
+          afterSignInUrl="/dashboard"
+          afterSignUpUrl="/dashboard"
+          signInUrl="/sign-in"
+          signUpUrl="/sign-up"
+        >
           {children}
           <Toaster position="bottom-right" />
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
