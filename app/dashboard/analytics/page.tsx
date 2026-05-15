@@ -99,17 +99,17 @@ export default async function AnalyticsPage({
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
         {[
-          { label: "Revenus (Période)", value: \`\${grandTotalRevenue.toFixed(2)}€\`, icon: DollarSign, trend: \`\${revenueTrend >= 0 ? '+' : ''}\${revenueTrend}%\`, color: "bg-emerald-50 text-emerald-600", positive: revenueTrend >= 0 },
-          { label: "Inscriptions", value: allEnrollments.length, icon: Users, trend: \`\${enrollmentTrend >= 0 ? '+' : ''}\${enrollmentTrend}%\`, color: "bg-blue-50 text-blue-600", positive: enrollmentTrend >= 0 },
-          { label: "Progression Moy.", value: \`\${avgProgress}%\`, icon: TrendingUp, trend: "Stable", color: "bg-amber-50 text-amber-600", positive: true },
-          { label: "Taux de Réussite", value: \`\${successRate}%\`, icon: Award, trend: "Elite", color: "bg-purple-50 text-purple-600", positive: true },
+          { label: "Revenus (Période)", value: `${grandTotalRevenue.toFixed(2)}€`, icon: DollarSign, trend: `${revenueTrend >= 0 ? '+' : ''}${revenueTrend}%`, color: "bg-emerald-50 text-emerald-600", positive: revenueTrend >= 0 },
+          { label: "Inscriptions", value: allEnrollments.length, icon: Users, trend: `${enrollmentTrend >= 0 ? '+' : ''}${enrollmentTrend}%`, color: "bg-blue-50 text-blue-600", positive: enrollmentTrend >= 0 },
+          { label: "Progression Moy.", value: `${avgProgress}%`, icon: TrendingUp, trend: "Stable", color: "bg-amber-50 text-amber-600", positive: true },
+          { label: "Taux de Réussite", value: `${successRate}%`, icon: Award, trend: "Elite", color: "bg-purple-50 text-purple-600", positive: true },
         ].map((stat, i) => (
           <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-all group">
             <div className="flex items-center justify-between mb-6">
-              <div className={\`p-4 rounded-2xl \${stat.color} transition-transform group-hover:scale-110 shadow-sm\`}>
+              <div className={`p-4 rounded-2xl ${stat.color} transition-transform group-hover:scale-110 shadow-sm`}>
                 <stat.icon className="w-6 h-6" />
               </div>
-              <div className={\`flex items-center gap-1 text-[10px] font-black \${stat.positive ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : 'text-rose-600 bg-rose-50 border-rose-100'} px-3 py-1.5 rounded-full uppercase tracking-widest border\`}>
+              <div className={`flex items-center gap-1 text-[10px] font-black ${stat.positive ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : 'text-rose-600 bg-rose-50 border-rose-100'} px-3 py-1.5 rounded-full uppercase tracking-widest border`}>
                 {stat.positive ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
                 {stat.trend}
               </div>
@@ -131,7 +131,7 @@ export default async function AnalyticsPage({
                   <div key={i} className="flex-1 flex flex-col items-center gap-3 group cursor-pointer h-full justify-end">
                     <div
                       className="w-full bg-secondary/30 rounded-t-2xl transition-all group-hover:bg-secondary relative"
-                      style={{ height: \`\${height}%\` }}
+                      style={{ height: `${height}%` }}
                     >
                       <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-white text-gray-900 text-[10px] font-black px-3 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-all shadow-xl scale-90 group-hover:scale-100 whitespace-nowrap">
                         {d.count} inscrits
