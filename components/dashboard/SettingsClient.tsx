@@ -35,36 +35,36 @@ export default function SettingsClient({ user }: SettingsClientProps) {
     theme: user.theme || "light"
   });
 
-  const onSave = async () => {
+  const onSave = async (specificData?: Partial<typeof formData>) => {
     setIsLoading(true);
+    const dataToSend = specificData || formData;
     try {
       const response = await fetch("/api/user", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSend),
       });
 
       if (!response.ok) throw new Error("Erreur de mise à jour");
 
-      toast.success("Paramètres mis à jour avec succès !");
+      toast.success("Paramètres synchronisés avec succès !");
     } catch (error) {
-      toast.error("Erreur lors de la sauvegarde");
+      toast.error("Erreur lors de la sauvegarde Cloud");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleStripeConnect = () => {
-    toast.loading("Redirection vers Stripe...");
-    // Simulate real connect redirect
+    toast.loading("Ouverture du portail Stripe Connect...");
     setTimeout(() => {
-      window.location.assign("https://dashboard.stripe.com/test/onboarding");
-    }, 1500);
+      window.open("https://dashboard.stripe.com/test/onboarding", "_blank");
+    }, 1200);
   };
 
   const tabs = [
     { id: 'profile', label: 'Profil Public', icon: UserIcon },
-    { id: 'billing', label: 'Facturation & Paiements', icon: CreditCard },
+    { id: 'billing', label: 'Facturation & Revenus', icon: CreditCard },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'security', label: 'Sécurité', icon: Shield },
     { id: 'appearance', label: 'Apparence', icon: Palette },
@@ -97,34 +97,19 @@ export default function SettingsClient({ user }: SettingsClientProps) {
                   </div>
                 </div>
               </div>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div>
                   <label className="block text-[11px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3">Prénom</label>
-                  <input
-                    type="text"
-                    value={formData.firstName}
-                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full px-6 py-4 border border-gray-100 rounded-2xl bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:bg-white transition-all font-bold text-sm shadow-inner"
-                  />
+                  <input type="text" value={formData.firstName} onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} className="w-full px-6 py-4 border border-gray-100 rounded-2xl bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:bg-white transition-all font-bold text-sm shadow-inner" />
                 </div>
                 <div>
                   <label className="block text-[11px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3">Nom</label>
-                  <input
-                    type="text"
-                    value={formData.lastName}
-                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                    className="w-full px-6 py-4 border border-gray-100 rounded-2xl bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:bg-white transition-all font-bold text-sm shadow-inner"
-                  />
+                  <input type="text" value={formData.lastName} onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} className="w-full px-6 py-4 border border-gray-100 rounded-2xl bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:bg-white transition-all font-bold text-sm shadow-inner" />
                 </div>
               </div>
-              <button
-                onClick={onSave}
-                disabled={isLoading}
-                className="w-full md:w-auto px-10 py-4 bg-gray-900 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-gray-800 transition-all shadow-xl shadow-gray-900/20 flex items-center justify-center gap-2"
-              >
+              <button onClick={() => onSave()} disabled={isLoading} className="w-full md:w-auto px-10 py-4 bg-gray-900 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-gray-800 transition-all shadow-xl shadow-gray-900/20 flex items-center justify-center gap-2">
                 {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                Sauvegarder les modifications
+                Sauvegarder le profil
               </button>
             </div>
           </div>
@@ -147,11 +132,8 @@ export default function SettingsClient({ user }: SettingsClientProps) {
                       Recevez vos virements en 24h. Gérez vos remboursements et vos factures élèves directement via l'infrastructure sécurisée Stripe.
                     </p>
                   </div>
-                  <button
-                    onClick={handleStripeConnect}
-                    className="flex items-center gap-3 px-8 py-4 bg-white text-emerald-700 text-xs font-black uppercase tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl whitespace-nowrap"
-                  >
-                    Lancer la connexion Stripe
+                  <button onClick={handleStripeConnect} className="flex items-center gap-3 px-8 py-4 bg-white text-emerald-700 text-xs font-black uppercase tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl whitespace-nowrap">
+                    Accéder au Dashboard Stripe
                     <ExternalLink className="w-4 h-4" />
                   </button>
                 </div>
@@ -163,18 +145,10 @@ export default function SettingsClient({ user }: SettingsClientProps) {
                     user.enrollments.map((e: any) => (
                       <div key={e.id} className="flex items-center justify-between p-6 bg-gray-50/50 rounded-[1.5rem] border border-gray-100 hover:bg-white transition-all">
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 font-bold text-xs">
-                             €
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold text-gray-900">{e.user.firstName} {e.user.lastName}</p>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">{e.course.title}</p>
-                          </div>
+                          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 font-bold text-xs">€</div>
+                          <div><p className="text-sm font-bold text-gray-900">{e.user.firstName} {e.user.lastName}</p><p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">{e.course.title}</p></div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-sm font-black text-gray-900">+{e.course.price}€</p>
-                          <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">{new Date(e.createdAt).toLocaleDateString()}</p>
-                        </div>
+                        <div className="text-right"><p className="text-sm font-black text-gray-900">+{e.course.price}€</p><p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">{new Date(e.createdAt).toLocaleDateString()}</p></div>
                       </div>
                     ))
                   ) : (
@@ -196,59 +170,41 @@ export default function SettingsClient({ user }: SettingsClientProps) {
                 { id: 'notificationsEnabled', label: "Inscriptions Elèves", desc: "Soyez notifié instantanément à chaque nouvel inscrit." },
                 { id: 'weeklyReportsEnabled', label: "Rapports Hebdomadaires", desc: "Recevez un bilan SEO et financier tous les lundis matin." },
                 { id: 'marketingEmails', label: "Actualités FormaFlow", desc: "Découvrez les nouvelles fonctionnalités 'Elite 2026' en avant-première." },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-6 rounded-[2rem] border border-gray-50 hover:border-secondary/10 transition-all group">
-                  <div className="max-w-md">
-                    <p className="text-sm font-bold text-gray-900 mb-1">{item.label}</p>
-                    <p className="text-xs text-gray-400 font-medium leading-relaxed">{item.desc}</p>
+              ].map((item, i) => {
+                const key = item.id as keyof typeof formData;
+                const active = formData[key];
+                return (
+                  <div key={i} className="flex items-center justify-between p-6 rounded-[2rem] border border-gray-50 hover:border-secondary/10 transition-all group">
+                    <div className="max-w-md">
+                      <p className="text-sm font-bold text-gray-900 mb-1">{item.label}</p>
+                      <p className="text-xs text-gray-400 font-medium leading-relaxed">{item.desc}</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        const newVal = !active;
+                        setFormData({ ...formData, [key]: newVal });
+                        onSave({ [key]: newVal });
+                      }}
+                      className={`w-14 h-7 rounded-full relative transition-all duration-300 shadow-inner ${active ? 'bg-secondary' : 'bg-gray-200'}`}
+                    >
+                      <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 ${active ? 'left-8' : 'left-1'}`} />
+                    </button>
                   </div>
-                  <button
-                    onClick={() => {
-                      const key = item.id as keyof typeof formData;
-                      setFormData({ ...formData, [key]: !formData[key] });
-                    }}
-                    className={`w-14 h-7 rounded-full relative transition-all duration-300 shadow-inner ${formData[item.id as keyof typeof formData] ? 'bg-secondary' : 'bg-gray-200'}`}
-                  >
-                    <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 ${formData[item.id as keyof typeof formData] ? 'left-8' : 'left-1'}`} />
-                  </button>
-                </div>
-              ))}
-              <div className="pt-10 flex justify-end">
-                 <button onClick={onSave} className="px-10 py-4 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-gray-800 transition-all shadow-xl">Enregistrer les préférences</button>
-              </div>
+                );
+              })}
             </div>
           </div>
         );
       case "security":
         return (
           <div className="bg-white rounded-[3rem] border border-gray-100 p-10 shadow-sm animate-fade-in">
-            <h3 className="text-xl font-bold text-gray-900 mb-10 tracking-tight">Sûreté du Compte & Authentification</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-10 tracking-tight">Sûreté du Compte</h3>
             <div className="p-8 bg-amber-50 rounded-[2.5rem] border border-amber-100 flex items-start gap-6 mb-10">
-              <div className="p-4 bg-white rounded-2xl shadow-sm text-amber-600 border border-amber-100">
-                <Shield className="w-6 h-6" />
-              </div>
-              <div>
-                <p className="text-base font-bold text-amber-900 mb-2">Gestion Centralisée (Clerk Identity)</p>
-                <p className="text-sm text-amber-700 font-medium leading-relaxed">
-                  Pour votre sécurité, nous utilisons Clerk. Votre mot de passe, l'authentification multi-facteurs (MFA) et les sessions actives sont gérés dans un environnement ultra-sécurisé externe.
-                </p>
-              </div>
+              <div className="p-4 bg-white rounded-2xl shadow-sm text-amber-600 border border-amber-100"><Shield className="w-6 h-6" /></div>
+              <div><p className="text-base font-bold text-amber-900 mb-2">Gestion Centralisée (Clerk Identity)</p><p className="text-sm text-amber-700 font-medium leading-relaxed">Votre sécurité est gérée par Clerk pour une protection maximale.</p></div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
-               <div className="p-6 border border-gray-50 rounded-3xl bg-gray-50/50">
-                  <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Dernière connexion</p>
-                  <p className="font-bold text-gray-900">Aujourd'hui, 14:30</p>
-               </div>
-               <div className="p-6 border border-gray-50 rounded-3xl bg-gray-50/50">
-                  <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Niveau de Sécurité</p>
-                  <span className="inline-flex items-center gap-2 text-emerald-600 font-bold text-sm"><CheckCircle2 className="w-4 h-4" /> Maximal</span>
-               </div>
-            </div>
-            <button
-               onClick={() => window.open('https://clerk.com/user', '_blank')}
-               className="flex items-center gap-3 px-10 py-5 bg-gray-900 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-[1.5rem] hover:bg-gray-800 transition-all shadow-xl shadow-gray-900/20"
-            >
-              Gérer mon profil de sécurité
+            <button onClick={() => window.open('https://clerk.com/user', '_blank')} className="flex items-center gap-3 px-10 py-5 bg-gray-900 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-[1.5rem] hover:bg-gray-800 transition-all shadow-xl shadow-gray-900/20">
+              Gérer mon profil Clerk
               <ExternalLink className="w-4 h-4 text-secondary" />
             </button>
           </div>
@@ -257,7 +213,7 @@ export default function SettingsClient({ user }: SettingsClientProps) {
         return (
           <div className="bg-white rounded-[3rem] border border-gray-100 p-10 shadow-sm animate-fade-in">
             <h3 className="text-xl font-bold text-gray-900 mb-10 tracking-tight">Expérience Visuelle</h3>
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               {[
                 { id: 'light', label: 'FormaFlow Clair', desc: 'Minimalisme & Sérénité', icon: Sun },
                 { id: 'dark', label: 'Mode Cinématique', desc: 'Elite Dark Interface', icon: Moon },
@@ -268,36 +224,18 @@ export default function SettingsClient({ user }: SettingsClientProps) {
                     key={theme.id}
                     onClick={() => {
                       setFormData({ ...formData, theme: theme.id });
-                      toast.success(`Mode ${theme.label} sélectionné`);
+                      onSave({ theme: theme.id });
                     }}
                     className={`p-10 rounded-[3rem] border-2 transition-all flex flex-col items-center text-center gap-6 group/th ${
-                      active
-                        ? "border-secondary bg-secondary/5 text-secondary shadow-xl shadow-secondary/5"
-                        : "border-gray-50 bg-gray-50/30 text-gray-400 grayscale hover:grayscale-0 hover:border-gray-200"
+                      active ? "border-secondary bg-secondary/5 text-secondary shadow-xl shadow-secondary/5" : "border-gray-50 bg-gray-50/30 text-gray-400 grayscale hover:grayscale-0 hover:border-gray-200"
                     }`}
                   >
-                    <div className={`p-5 rounded-[2rem] transition-all shadow-sm ${active ? 'bg-white text-secondary' : 'bg-white text-gray-300'}`}>
-                      <theme.icon className="w-10 h-10" />
-                    </div>
-                    <div>
-                      <span className="text-sm font-black uppercase tracking-widest block mb-2">{theme.label}</span>
-                      <p className={`text-[10px] font-bold ${active ? 'text-secondary/60' : 'text-gray-400'}`}>{theme.desc}</p>
-                    </div>
+                    <div className={`p-5 rounded-[2rem] transition-all shadow-sm ${active ? 'bg-white text-secondary' : 'bg-white text-gray-300'}`}><theme.icon className="w-10 h-10" /></div>
+                    <div><span className="text-sm font-black uppercase tracking-widest block mb-2">{theme.label}</span><p className={`text-[10px] font-bold ${active ? 'text-secondary/60' : 'text-gray-400'}`}>{theme.desc}</p></div>
                     {active && <CheckCircle2 className="w-6 h-6 text-secondary" />}
                   </button>
                 );
               })}
-            </div>
-            <div className="mt-12 p-8 bg-secondary/5 rounded-[2.5rem] border border-secondary/10 flex items-center gap-6">
-                <div className="p-3 bg-white rounded-2xl shadow-sm text-secondary">
-                  <Palette className="w-6 h-6" />
-                </div>
-                <p className="text-xs text-secondary/80 font-bold leading-relaxed">
-                  Le mode sombre cinématique est recommandé pour les créateurs travaillant de nuit pour une meilleure concentration.
-                </p>
-            </div>
-            <div className="mt-10 flex justify-end">
-               <button onClick={onSave} className="px-10 py-4 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-primary/10">Appliquer et enregistrer</button>
             </div>
           </div>
         );
@@ -314,15 +252,11 @@ export default function SettingsClient({ user }: SettingsClientProps) {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`w-full flex items-center justify-between p-6 rounded-[2rem] transition-all ${
-              activeTab === tab.id
-                ? "bg-white text-secondary font-black shadow-2xl border border-gray-100 scale-[1.05]"
-                : "text-gray-400 hover:bg-gray-50/80 font-bold hover:translate-x-2"
+              activeTab === tab.id ? "bg-white text-secondary font-black shadow-2xl border border-gray-100 scale-[1.05]" : "text-gray-400 hover:bg-gray-50/80 font-bold hover:translate-x-2"
             }`}
           >
             <div className="flex items-center gap-4">
-              <div className={`p-2.5 rounded-xl transition-all ${activeTab === tab.id ? "bg-secondary text-white shadow-lg shadow-secondary/30" : "bg-gray-100 text-gray-300"}`}>
-                <tab.icon className="w-5 h-5" />
-              </div>
+              <div className={`p-2.5 rounded-xl transition-all ${activeTab === tab.id ? "bg-secondary text-white shadow-lg shadow-secondary/30" : "bg-gray-100 text-gray-300"}`}><tab.icon className="w-5 h-5" /></div>
               <span className="text-sm tracking-tight">{tab.label}</span>
             </div>
             {activeTab === tab.id && <ChevronRight className="w-4 h-4 animate-pulse" />}

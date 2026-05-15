@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X, Rocket } from "lucide-react";
+import { Menu, X, Rocket, BookOpen } from "lucide-react";
 import { UserButton, useUser } from "@clerk/nextjs";
 
 export default function Header() {
@@ -23,7 +23,6 @@ export default function Header() {
       isScrolled ? "bg-white/80 backdrop-blur-md py-4 shadow-sm" : "bg-transparent py-6"
     }`}>
       <div className="container mx-auto px-6 flex items-center justify-between">
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-white transition-transform group-hover:scale-105">
             <Rocket className="w-5 h-5" />
@@ -31,18 +30,20 @@ export default function Header() {
           <span className="font-bold text-2xl tracking-tighter text-primary">FormaFlow</span>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">
           <Link href="/#features" className="text-sm font-semibold text-muted hover:text-primary transition-colors">Produit</Link>
           <Link href="/#mission" className="text-sm font-semibold text-muted hover:text-primary transition-colors">Vision</Link>
-          <Link href="/#comparison" className="text-sm font-semibold text-muted hover:text-primary transition-colors">Pourquoi nous ?</Link>
           <Link href="/courses" className="text-sm font-semibold text-muted hover:text-primary transition-colors">Marketplace</Link>
         </nav>
 
-        {/* Actions */}
         <div className="hidden md:flex items-center gap-4">
           {isSignedIn ? (
             <div className="flex items-center gap-4">
+              <Link href="/my-courses" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-primary transition-all">
+                <BookOpen className="w-4 h-4" />
+                Mes Formations
+              </Link>
+              <div className="h-6 w-px bg-gray-100" />
               <Link href="/dashboard" className="text-sm font-bold text-primary hover:text-secondary transition-colors">Dashboard</Link>
               <UserButton afterSignOutUrl="/" />
             </div>
@@ -56,7 +57,6 @@ export default function Header() {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
         <button 
           className="md:hidden p-2 text-primary"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -65,18 +65,22 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 py-8 px-6 shadow-xl animate-fade-in">
           <nav className="flex flex-col gap-6">
             <Link href="/#features" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold">Produit</Link>
-            <Link href="/#mission" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold">Vision</Link>
-            <Link href="/#comparison" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold">Pourquoi nous ?</Link>
             <Link href="/courses" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold">Marketplace</Link>
+            {isSignedIn && <Link href="/my-courses" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold text-secondary">Mes Formations</Link>}
             <hr className="border-gray-100" />
             <div className="flex flex-col gap-4">
-              <Link href="/sign-in" className="text-center py-3 font-bold text-primary">Connexion</Link>
-              <Link href="/sign-up" className="text-center py-4 bg-secondary text-white font-bold rounded-xl">Démarrer gratuitement</Link>
+              {isSignedIn ? (
+                <Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="text-center py-4 bg-primary text-white font-bold rounded-xl">Dashboard</Link>
+              ) : (
+                <>
+                   <Link href="/sign-in" className="text-center py-3 font-bold text-primary">Connexion</Link>
+                   <Link href="/sign-up" className="text-center py-4 bg-secondary text-white font-bold rounded-xl">Démarrer gratuitement</Link>
+                </>
+              )}
             </div>
           </nav>
         </div>
