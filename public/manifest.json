@@ -1,0 +1,10 @@
+{
+  "name": "FormaFlow - Créez votre formation en 1h",
+  "short_name": "FormaFlow",
+  "description": "Plateforme LMS 100% Française. Créez, vendez et gérez vos formations en ligne avec un éditeur intuitif et conformité Qualiopi.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F0EB",
+  "theme_color": "#2563EB",
+  "icons": []
+}
