@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 
 export const metadata: Metadata = {
   title: "FormaFlow - Créez votre formation en 1h",
@@ -19,18 +20,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
-      <body className="font-sans antialiased bg-cream">
-        <ClerkProvider
-          afterSignInUrl="/dashboard"
-          afterSignUpUrl="/dashboard"
-          signInUrl="/sign-in"
-          signUpUrl="/sign-up"
-        >
+    <ClerkProvider
+      afterSignInUrl="/dashboard"
+      afterSignUpUrl="/dashboard"
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+    >
+      <html lang="fr">
+        <body className="font-sans antialiased bg-cream">
           {children}
           <Toaster position="bottom-right" />
-        </ClerkProvider>
-      </body>
-    </html>
+          <ServiceWorkerRegistration />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

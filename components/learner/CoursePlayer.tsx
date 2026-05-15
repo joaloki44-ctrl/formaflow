@@ -15,7 +15,6 @@ import {
   Download,
   Paperclip
 } from "lucide-react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";

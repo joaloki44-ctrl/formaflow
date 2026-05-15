@@ -9,22 +9,23 @@ export async function PATCH(req: Request) {
 
     const body = await req.json();
 
-    // We update fields while ensuring we don't break on missing schema fields in standard Prisma client
-    // Since I updated the schema file, the code should reflect it even if generate didn't run here.
+    // Filter body to only include fields that exist in the schema
+    const updateData: any = {};
+    if (body.firstName !== undefined) updateData.firstName = body.firstName;
+    if (body.lastName !== undefined) updateData.lastName = body.lastName;
+    if (body.notificationsEnabled !== undefined) updateData.notificationsEnabled = body.notificationsEnabled;
+    if (body.weeklyReportsEnabled !== undefined) updateData.weeklyReportsEnabled = body.weeklyReportsEnabled;
+    if (body.marketingEmails !== undefined) updateData.marketingEmails = body.marketingEmails;
+    if (body.theme !== undefined) updateData.theme = body.theme;
+
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
-      data: {
-        firstName: body.firstName,
-        lastName: body.lastName,
-        notificationsEnabled: body.notificationsEnabled,
-        weeklyReportsEnabled: body.weeklyReportsEnabled,
-        theme: body.theme,
-      },
+      data: updateData,
     });
 
     return NextResponse.json(updatedUser);
   } catch (error) {
     console.error("[USER_PATCH]", error);
-    return new NextResponse("Erreur lors de la mise à jour des préférences", { status: 500 });
+    return new NextResponse("Erreur lors de la mise à jour", { status: 500 });
   }
 }

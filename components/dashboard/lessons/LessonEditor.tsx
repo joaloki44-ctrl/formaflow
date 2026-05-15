@@ -173,8 +173,8 @@ export default function LessonEditor({ type, content, onChange }: LessonEditorPr
                 </div>
                 <p className="text-sm font-bold text-gray-900 mb-1">Télécharger votre contenu vidéo</p>
                 <p className="text-[10px] text-gray-400 mb-6 font-black uppercase tracking-widest">MP4, MOV ou WebM (max 1Go)</p>
-                <input type="file" className="hidden" id={`video-upload-${block.id}`} accept="video/*" onChange={(e) => e.target.files?.[0] && handleVideoUpload(block.id, e.target.files[0])} />
-                <label htmlFor={`video-upload-${block.id}`} className="px-8 py-4 bg-gray-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl cursor-pointer hover:bg-gray-800 transition-all shadow-xl shadow-gray-900/20">Parcourir les fichiers</label>
+                <input type="file" className="hidden" id={\`video-upload-\${block.id}\`} accept="video/*" onChange={(e) => e.target.files?.[0] && handleVideoUpload(block.id, e.target.files[0])} />
+                <label htmlFor={\`video-upload-\${block.id}\`} className="px-8 py-4 bg-gray-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl cursor-pointer hover:bg-gray-800 transition-all shadow-xl shadow-gray-900/20">Parcourir les fichiers</label>
               </div>
             )}
           </div>
@@ -191,8 +191,8 @@ export default function LessonEditor({ type, content, onChange }: LessonEditorPr
                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{block.metadata?.fileSize || "PDF, ZIP, DOCX..."}</p>
               </div>
             </div>
-            <input type="file" className="hidden" id={`file-upload-${block.id}`} onChange={(e) => e.target.files?.[0] && updateBlockMetadata(block.id, { fileName: e.target.files[0].name, fileSize: (e.target.files[0].size / 1024 / 1024).toFixed(2) + " MB" })} />
-            <label htmlFor={`file-upload-${block.id}`} className="px-6 py-3 bg-white border border-gray-200 text-gray-900 text-[10px] font-black uppercase tracking-widest rounded-xl cursor-pointer hover:border-secondary/20 transition-all">Ajouter une ressource</label>
+            <input type="file" className="hidden" id={\`file-upload-\${block.id}\`} onChange={(e) => e.target.files?.[0] && updateBlockMetadata(block.id, { fileName: e.target.files[0].name, fileSize: (e.target.files[0].size / 1024 / 1024).toFixed(2) + " MB" })} />
+            <label htmlFor={\`file-upload-\${block.id}\`} className="px-6 py-3 bg-white border border-gray-200 text-gray-900 text-[10px] font-black uppercase tracking-widest rounded-xl cursor-pointer hover:border-secondary/20 transition-all">Ajouter une ressource</label>
           </div>
         );
       default:
