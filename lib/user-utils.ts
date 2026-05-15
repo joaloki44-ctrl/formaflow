@@ -3,39 +3,42 @@ import { prisma } from "@/lib/prisma";
 
 /**
  * Ensures the Clerk user is synchronized with the Prisma database.
- * Returns the Prisma user object.
+ * Uses upsert to prevent race conditions during concurrent server component renders.
  */
 export async function getOrCreateUser() {
   const { userId } = auth();
   if (!userId) return null;
 
-  let user = await prisma.user.findUnique({
-    where: { clerkId: userId },
-  });
+  const clerkUser = await currentUser();
+  if (!clerkUser) return null;
 
-  // If user doesn't exist in DB yet (webhook delay or missed), create them on the fly
-  if (!user) {
-    const clerkUser = await currentUser();
-    if (!clerkUser) return null;
+  const email = clerkUser.emailAddresses[0]?.emailAddress || "";
+  const firstName = clerkUser.firstName || "";
+  const lastName = clerkUser.lastName || "";
+  const imageUrl = clerkUser.imageUrl || "";
 
-    user = await prisma.user.create({
-      data: {
-        clerkId: userId,
-        email: clerkUser.emailAddresses[0]?.emailAddress || "",
-        firstName: clerkUser.firstName || "",
-        lastName: clerkUser.lastName || "",
-        imageUrl: clerkUser.imageUrl || "",
-        role: "INSTRUCTOR",
+  try {
+    const user = await prisma.user.upsert({
+      where: { clerkId: userId },
+      update: {
         lastActiveAt: new Date(),
       },
+      create: {
+        clerkId: userId,
+        email,
+        firstName,
+        lastName,
+        imageUrl,
+        role: "INSTRUCTOR",
+      },
     });
-  } else {
-    // Background update of last activity (non-blocking)
-    prisma.user.update({
-      where: { id: user.id },
-      data: { lastActiveAt: new Date() }
-    }).catch(console.error);
-  }
 
-  return user;
+    return user;
+  } catch (error) {
+    console.error("[GET_OR_CREATE_USER]", error);
+    // Fallback to findUnique if upsert fails (e.g. concurrent upsert)
+    return await prisma.user.findUnique({
+      where: { clerkId: userId },
+    });
+  }
 }
