@@ -30,9 +30,9 @@ export default async function AssignmentsPage({ params }: { params: { orgId: str
   return (
     <AssignmentsClient
       orgId={params.orgId}
-      initialAssignments={assignments}
-      departments={departments}
-      availableCourses={courses}
+      initialAssignments={assignments as any}
+      departments={departments as any}
+      availableCourses={courses as any}
     />
   );
 }

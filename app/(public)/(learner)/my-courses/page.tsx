@@ -148,7 +148,7 @@ export default async function MyCoursesPage() {
             </Link>
           </div>
         ) : (
-          <MyCoursesGrid enrollments={enrichedEnrollments} />
+          <MyCoursesGrid enrollments={enrichedEnrollments as any} />
         )}
       </div>
     </div>
