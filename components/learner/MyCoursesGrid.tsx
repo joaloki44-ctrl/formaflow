@@ -6,7 +6,7 @@ import { Play, Clock, Award, ChevronRight, CheckCircle2, AlertCircle, Calendar }
 
 interface Assignment {
   isMandatory: boolean;
-  dueDate: Date | string | null;
+  dueDate: string | null;
   organization: { id: string; name: string };
 }
 
@@ -34,7 +34,7 @@ interface MyCoursesGridProps {
 }
 
 export default function MyCoursesGrid({ enrollments }: MyCoursesGridProps) {
-  function getDueDateStatus(dueDate: Date | string) {
+  function getDueDateStatus(dueDate: string) {
     const due = new Date(dueDate);
     const now = new Date();
     const diffDays = Math.ceil((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));

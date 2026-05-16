@@ -20,5 +20,5 @@ export default async function DepartmentsPage({ params }: { params: { orgId: str
     include: { user: { select: { id: true, firstName: true, lastName: true } } },
   });
 
-  return <DepartmentsClient orgId={params.orgId} initialDepartments={departments as any} members={members as any} />;
+  return <DepartmentsClient orgId={params.orgId} initialDepartments={departments} members={members} />;
 }

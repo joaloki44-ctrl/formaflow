@@ -9,20 +9,37 @@ export default async function SettingsPage() {
 
   const fullUser = await prisma.user.findUnique({
     where: { id: user.id },
-    include: {
-      enrollments: {
-        where: {
-          course: { instructorId: user.id }
-        },
-        include: {
-          user: { select: { firstName: true, lastName: true } },
-          course: { select: { title: true, price: true } }
-        },
-        orderBy: { createdAt: "desc" },
-        take: 10
-      }
-    }
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      imageUrl: true,
+      role: true,
+      notificationsEnabled: true,
+      weeklyReportsEnabled: true,
+      theme: true,
+      stripeAccountId: true,
+      stripeAccountStatus: true,
+      stripeOnboardingDone: true,
+    },
   });
+
+  const payments = await prisma.payment.findMany({
+    where: { instructorId: user.id, status: "COMPLETED" },
+    include: {
+      student: { select: { firstName: true, lastName: true } },
+      course: { select: { title: true } },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 20,
+  });
+
+  const serializedPayments = payments.map((p) => ({
+    ...p,
+    createdAt: p.createdAt.toISOString(),
+    updatedAt: p.updatedAt.toISOString(),
+  }));
 
   return (
     <div className="p-6 md:p-10 max-w-6xl mx-auto w-full">
@@ -30,7 +47,7 @@ export default async function SettingsPage() {
         <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Paramètres Globaux</h1>
         <p className="text-gray-500 mt-1 font-medium text-sm">Contrôlez votre environnement, votre facturation et votre sécurité.</p>
       </div>
-      <SettingsClient user={fullUser} />
+      <SettingsClient user={fullUser} payments={serializedPayments} />
     </div>
   );
 }

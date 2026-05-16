@@ -8,6 +8,8 @@ export default authMiddleware({
     "/sign-up",
     "/api/webhook/clerk",
     "/api/webhook/stripe",
+    "/api/stripe/connect/return",
+    "/api/stripe/connect/refresh",
     "/courses",
     "/courses/(.*)",
   ],

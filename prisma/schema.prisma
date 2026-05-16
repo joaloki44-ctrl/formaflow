@@ -24,15 +24,22 @@ model User {
   weeklyReportsEnabled Boolean @default(true)
   theme                String  @default("light")
 
+  // Stripe Connect
+  stripeAccountId      String?
+  stripeAccountStatus  String? // "pending" | "active" | "restricted"
+  stripeOnboardingDone Boolean @default(false)
+
   lastActiveAt  DateTime  @default(now())
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  courses       Course[]
-  enrollments   Enrollment[]
-  reviews       Review[]
-  certificates  Certificate[]
-  orgMemberships OrganizationMember[]
+  courses              Course[]
+  enrollments          Enrollment[]
+  reviews              Review[]
+  certificates         Certificate[]
+  orgMemberships       OrganizationMember[]
+  paymentsAsStudent    Payment[] @relation("StudentPayments")
+  paymentsAsInstructor Payment[] @relation("InstructorPayments")
 
   @@map("users")
   @@index([clerkId])
@@ -59,6 +66,7 @@ model Course {
   certificates Certificate[]
   assignments  CourseAssignment[]
   learningPathCourses LearningPathCourse[]
+  payments     Payment[]
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -329,6 +337,38 @@ model LearningPathCourse {
   @@unique([learningPathId, courseId])
   @@map("learning_path_courses")
   @@index([learningPathId])
+}
+
+model Payment {
+  id                    String        @id @default(uuid())
+  courseId              String
+  studentId             String
+  instructorId          String
+  amount                Int
+  platformFee           Int
+  instructorAmount      Int
+  currency              String        @default("eur")
+  stripeSessionId       String?       @unique
+  stripePaymentIntentId String?       @unique
+  status                PaymentStatus @default(PENDING)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  course     Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student    User   @relation("StudentPayments", fields: [studentId], references: [id])
+  instructor User   @relation("InstructorPayments", fields: [instructorId], references: [id])
+
+  @@map("payments")
+  @@index([courseId])
+  @@index([studentId])
+  @@index([instructorId])
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
 }
 
 enum Role {

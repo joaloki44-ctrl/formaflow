@@ -31,8 +31,8 @@ export default async function MembersPage({ params }: { params: { orgId: string 
     <MembersClient
       orgId={params.orgId}
       orgName={org.name}
-      initialMembers={members as any}
-      departments={departments as any}
+      initialMembers={members}
+      departments={departments}
     />
   );
 }
