@@ -29,7 +29,8 @@ export async function getOrCreateUser() {
         firstName,
         lastName,
         imageUrl,
-        role: "INSTRUCTOR",
+        role: "STUDENT",       // sera mis à jour lors de l'onboarding
+        onboardingDone: false,
       },
     });
 

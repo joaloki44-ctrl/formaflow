@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, BookOpen, Users, Settings, BarChart3, Building2 } from "lucide-react";
+import { LayoutDashboard, BookOpen, Users, Settings, BarChart3 } from "lucide-react";
 import { UserButton, useUser } from "@clerk/nextjs";
 
 const navItems = [
@@ -56,22 +56,6 @@ export default function Sidebar() {
           })}
         </ul>
       </nav>
-
-      {/* Enterprise CTA */}
-      <div className="px-4 pb-2">
-        <Link
-          href="/org/new"
-          className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-100 hover:border-orange-200 transition-all group"
-        >
-          <div className="w-7 h-7 bg-gradient-to-br from-[#ff6b4a] to-[#f09340] rounded-lg flex items-center justify-center flex-shrink-0">
-            <Building2 className="w-4 h-4 text-white" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-gray-900">Espace Entreprise</p>
-            <p className="text-[10px] text-orange-600">Gérer vos équipes</p>
-          </div>
-        </Link>
-      </div>
 
       {/* User */}
       <div className="p-4 border-t border-gray-100">

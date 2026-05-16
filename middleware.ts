@@ -10,22 +10,25 @@ export default authMiddleware({
     "/api/webhook/stripe",
     "/courses",
     "/courses/(.*)",
-    "/org/new",
   ],
   ignoredRoutes: [
     "/api/webhook/clerk",
     "/api/webhook/stripe",
   ],
   afterAuth(auth, req) {
-    if (auth.userId && (req.nextUrl.pathname === "/sign-in" || req.nextUrl.pathname === "/sign-up")) {
-      const dashboardUrl = new URL("/dashboard", req.url);
-      return NextResponse.redirect(dashboardUrl);
+    const path = req.nextUrl.pathname;
+
+    // Redirect signed-in users away from auth pages to onboarding
+    if (auth.userId && (path === "/sign-in" || path === "/sign-up")) {
+      return NextResponse.redirect(new URL("/onboarding", req.url));
     }
 
-    // Protect org-admin routes
-    if (!auth.userId && req.nextUrl.pathname.startsWith("/org-admin")) {
-      const signInUrl = new URL("/sign-in", req.url);
-      return NextResponse.redirect(signInUrl);
+    // Protect all private sections
+    const privateRoutes = ["/dashboard", "/org-admin", "/learn", "/my-courses", "/onboarding", "/org"];
+    const isPrivate = privateRoutes.some((r) => path === r || path.startsWith(r + "/"));
+
+    if (!auth.userId && isPrivate) {
+      return NextResponse.redirect(new URL("/sign-in", req.url));
     }
   },
 });

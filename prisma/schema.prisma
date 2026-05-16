@@ -15,8 +15,9 @@ model User {
   firstName     String?
   lastName      String?
   imageUrl      String?
-  role          Role      @default(INSTRUCTOR)
-  isElite       Boolean   @default(false)
+  role            Role      @default(STUDENT)
+  isElite         Boolean   @default(false)
+  onboardingDone  Boolean   @default(false)
 
   // Settings
   notificationsEnabled Boolean @default(true)
@@ -331,9 +332,10 @@ model LearningPathCourse {
 }
 
 enum Role {
-  INSTRUCTOR
-  ADMIN
-  STUDENT
+  STUDENT     // Particulier — apprend pour lui-même
+  INSTRUCTOR  // Formateur — crée et vend des formations
+  COMPANY     // Entreprise — forme ses employés
+  ADMIN       // Administrateur plateforme
 }
 
 enum Level {

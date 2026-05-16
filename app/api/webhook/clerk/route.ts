@@ -46,7 +46,8 @@ export async function POST(req: Request) {
         firstName: first_name || "",
         lastName: last_name || "",
         imageUrl: image_url || "",
-        role: "INSTRUCTOR",
+        role: "STUDENT",       // sera mis à jour lors de l'onboarding
+        onboardingDone: false,
       },
     });
   }

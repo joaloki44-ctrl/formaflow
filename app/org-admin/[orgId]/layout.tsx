@@ -18,6 +18,13 @@ export default async function OrgAdminLayout({
   const user = await getOrCreateUser();
   if (!user) redirect("/sign-in");
 
+  if (!user.onboardingDone) redirect("/onboarding");
+
+  // Seuls les comptes Entreprise accèdent à l'espace org-admin
+  if (user.role !== "COMPANY" && user.role !== "ADMIN") {
+    redirect("/dashboard");
+  }
+
   const membership = await prisma.organizationMember.findUnique({
     where: { organizationId_userId: { organizationId: params.orgId, userId: user.id } },
     include: { organization: true },

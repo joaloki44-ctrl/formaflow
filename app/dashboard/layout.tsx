@@ -21,6 +21,17 @@ export default async function DashboardLayout({
     redirect("/sign-in");
   }
 
+  // Onboarding non terminé → choisir son profil
+  if (!user.onboardingDone) {
+    redirect("/onboarding");
+  }
+
+  // Seuls les formateurs accèdent au dashboard
+  if (user.role !== "INSTRUCTOR" && user.role !== "ADMIN") {
+    if (user.role === "COMPANY") redirect("/org/new");
+    else redirect("/learn");
+  }
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#faf9f6]">
       <MobileNav />
